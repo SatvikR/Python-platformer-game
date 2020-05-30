@@ -18,15 +18,15 @@ stat_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 24)
 
 class Player():
 	walk_speed = 7
-	start_x = 200
+	start_x = 100
 	start_y = 200
-	jump_velocity = 25
+	jump_velocity = 25 # Increase this value to jump higher
 	def __init__(self, img, x, y):
 		self.img = img
 		self.x = x
 		self.y = y
 		self.y_velocity = 0
-		self.x_velocity = self.walk_speed
+		self.x_velocity = 0
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
 	def draw(self, screen):
@@ -48,11 +48,12 @@ class Player():
 					self.y_velocity = 1.2
 					
 
-		if self.y + self.img.get_height() >= height:
+		if self.y + self.img.get_height() >= height + 1000: # increasing this number will increase the delay on falling off the map
 			self.x = self.start_x
 			self.y = self.start_y
 			self.y_velocity = 0 
 
+		self.x += self.x_velocity
 		self.y += self.y_velocity
 		
 	def jump(self):
@@ -76,7 +77,7 @@ class Platform(): #Platform + former = platformer
 
 
 def game_loop():
-	player = Player(player_img, 100, height / 2)
+	player = Player(player_img, Player.start_x, Player.start_y)
 	platforms = []
 	platforms.append(Platform(50, 700, ground_img))
 	platforms.append(Platform(800, 600, platform_one))
@@ -93,11 +94,12 @@ def game_loop():
 		if key[pygame.K_a]:
 			if player.x >= 0:
 				player.x_velocity = -player.walk_speed
-				player.x -= player.walk_speed
 		if key[pygame.K_d]:
 			if player.x <= width:
 				player.x_velocity = player.walk_speed
-				player.x += player.walk_speed
+		if not key[pygame.K_d] and not key[pygame.K_a]:
+			player.x_velocity = 0
+			
 		if key[pygame.K_SPACE]:
 			player.jump()
 		# UPDATE
