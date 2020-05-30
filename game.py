@@ -9,11 +9,12 @@ width, height = 1200, 800
 screen = pygame.display.set_mode((width, height))
 icon = pygame.image.load("./assets/images/icon.png")
 pygame.display.set_icon(icon)
+pygame.display.set_caption("The holy rectangle")
 player_img = pygame.image.load("./assets/images/player.png")
 ground_img = pygame.image.load("./assets/images/ground.png")
 platform_one = pygame.image.load("./assets/images/platform_1.png")
 platform_two = pygame.image.load("./assets/images/platform_2.png")
-stat_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 20)
+stat_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 24)
 
 class Player():
 	walk_speed = 7
@@ -35,13 +36,13 @@ class Player():
 		else:
 			screen.blit(self.img, (self.x, self.y))
 
-	def update_grav(self, platform_list):
+	def update_physics(self, platform_list):
 		self.y_velocity += 1.2
 
 		for platform in platform_list:
 			if self.rect.colliderect(platform.rect):
 				if self.y_velocity > 0 and platform.y > self.y + self.rect.height * 0.7:
-					self.y = platform.y - self.img.get_height()
+					self.y = platform.y - self.rect.height
 					self.y_velocity = 0
 				elif self.y_velocity < 0:
 					self.y_velocity = 1.2
@@ -100,7 +101,7 @@ def game_loop():
 		if key[pygame.K_SPACE]:
 			player.jump()
 		# UPDATE
-		player.update_grav(platforms)
+		player.update_physics(platforms)
 
 		# DRAW
 		screen.fill((47, 47, 47))
