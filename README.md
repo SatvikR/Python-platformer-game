@@ -1,2 +1,5 @@
 # Python-platformer-game
-Satvik, if you are reading this, idk what i'm doing.
+
+A platformer made with pygame
+<br>
+Made with python 3! (you need to have pygame installed obviousely)
