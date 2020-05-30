@@ -53,7 +53,13 @@ class Player():
 			self.y = self.start_y
 			self.y_velocity = 0 
 
-		self.x += self.x_velocity
+		if self.x_velocity > 0:
+			if self.x < width:
+				self.x += self.x_velocity
+		elif self.x_velocity < 0:
+			if self.x > 0:
+				self.x += self.x_velocity
+		
 		self.y += self.y_velocity
 		
 	def jump(self):
@@ -79,7 +85,7 @@ class Platform(): #Platform + former = platformer
 def game_loop():
 	player = Player(player_img, Player.start_x, Player.start_y)
 	platforms = []
-	platforms.append(Platform(50, 700, ground_img))
+	platforms.append(Platform(60, 700, ground_img))
 	platforms.append(Platform(800, 600, platform_one))
 	platforms.append(Platform(200, 400, platform_two))
 
@@ -92,11 +98,9 @@ def game_loop():
 
 		key = pygame.key.get_pressed()
 		if key[pygame.K_a]:
-			if player.x >= 0:
-				player.x_velocity = -player.walk_speed
+			player.x_velocity = -player.walk_speed
 		if key[pygame.K_d]:
-			if player.x <= width:
-				player.x_velocity = player.walk_speed
+			player.x_velocity = player.walk_speed
 		if not key[pygame.K_d] and not key[pygame.K_a]:
 			player.x_velocity = 0
 			
