@@ -143,7 +143,7 @@ def game_loop():
 		if key[pygame.K_F4] and key[pygame.K_LALT]:
 			pygame.quit()
 			sys.exit()
-			
+
 		if key[pygame.K_SPACE]:
 			player.jump()
 		# UPDATE
