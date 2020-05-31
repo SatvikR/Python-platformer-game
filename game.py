@@ -69,7 +69,7 @@ class Player():
 			self.y_velocity = 1.2
 
 		if self.x_velocity > 0:
-			if self.x < width:
+			if self.x + self.rect.width < width:
 				self.x += self.x_velocity
 		elif self.x_velocity < 0:
 			if self.x > 0:
