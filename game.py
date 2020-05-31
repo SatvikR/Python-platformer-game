@@ -20,7 +20,7 @@ class Player():
 	walk_speed = 7
 	start_x = 100
 	start_y = 200
-	jump_velocity = 25 # Increase this value to jump higher
+	jump_velocity = 27.5 # Increase this value to jump higher
 	def __init__(self, img, x, y):
 		self.img = img
 		self.x = x
