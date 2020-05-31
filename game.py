@@ -14,10 +14,13 @@ player_img = pygame.image.load("./assets/images/player.png")
 ground_img = pygame.image.load("./assets/images/ground.png")
 platform_one = pygame.image.load("./assets/images/platform_1.png")
 platform_two = pygame.image.load("./assets/images/platform_2.png")
+platform_three = pygame.image.load("./assets/images/platform_3.png")
+coin_img = pygame.image.load("./assets/images/coin.png")
 stat_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 24)
+score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
 
 class Player():
-	walk_speed = 7
+	walk_speed = 8
 	start_x = 100
 	start_y = 200
 	jump_velocity = 27.5 # Increase this value to jump higher
@@ -27,6 +30,7 @@ class Player():
 		self.y = y
 		self.y_velocity = 0
 		self.x_velocity = 0
+		self.score = 0
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
 	def draw(self, screen):
@@ -36,7 +40,7 @@ class Player():
 		else:
 			screen.blit(self.img, (self.x, self.y))
 
-	def update_physics(self, platform_list):
+	def update_physics(self, platform_list, coin_list):
 		self.y_velocity += 1.2
 
 		for platform in platform_list:
@@ -51,10 +55,18 @@ class Player():
 				elif self.x_velocity < 0 and platform.rect.x < self.x:
 					self.x_velocity = 0
 
+		for coin in coin_list:
+			if self.rect.colliderect(coin.rect):
+				self.score += 1
+				coin_list.remove(coin) 
+
 		if self.y + self.img.get_height() >= height + 1000: # increasing this number will increase the delay on falling off the map
 			self.x = self.start_x
 			self.y = self.start_y
 			self.y_velocity = 0 
+
+		if self.y_velocity < 0 and self.y <= 0:
+			self.y_velocity = 1.2
 
 		if self.x_velocity > 0:
 			if self.x < width:
@@ -85,13 +97,35 @@ class Platform(): #Platform + former = platformer
 			platform.draw(screen)
 
 
+class Coin():
+	def __init__(self, img, x, y):
+		self.img = img
+		self.x = x
+		self.y = y
+		self.y_velocity = -10
+		self.rect = self.img.get_rect(topleft=(self.x, self.y))
+		
+	def draw(self, screen):
+		screen.blit(self.img, (self.x, self.y))
+
+	@staticmethod
+	def draw_all(coin_list, screen):
+		for coin in coin_list:
+			coin.draw(screen)
+
+
 def game_loop():
 	player = Player(player_img, Player.start_x, Player.start_y)
 	platforms = []
+	coins = []
+
 	platforms.append(Platform(60, 700, ground_img))
 	platforms.append(Platform(800, 600, platform_one))
 	platforms.append(Platform(200, 400, platform_two))
-
+	platforms.append(Platform(900, 250, platform_three))
+	
+	coins.append(Coin(coin_img, 300, 325))
+	coins.append(Coin(coin_img, 1000, 175))
 
 	while True:
 		for event in pygame.event.get():
@@ -113,24 +147,23 @@ def game_loop():
 		if key[pygame.K_SPACE]:
 			player.jump()
 		# UPDATE
-		player.update_physics(platforms)
+		player.update_physics(platforms, coins)
 
 		# DRAW
 		screen.fill((47, 47, 47))
 
 		player.draw(screen)
+		Coin.draw_all(coins, screen)
 
 		Platform.draw_all(platforms, screen)
 
-		x_pos = stat_font.render("PLAYER_X: " + str(int(player.x)), True, (255, 255, 255))
-		y_pos = stat_font.render("PLAYER_Y: " + str(int(player.y)), True, (255, 255, 255))
 		x_vel = stat_font.render("PLAYER_X_VEL: " + str(player.x_velocity), True, (255, 255, 255))
 		y_vel = stat_font.render("PLAYER_Y_VEL: " + str(int(player.y_velocity)), True, (255, 255, 255))
+		score = score_font.render("SCORE: " + str(player.score), True, (255, 255, 255))
 
-		screen.blit(x_pos, (5, 5))
-		screen.blit(y_pos, (205, 5))
 		screen.blit(x_vel, (800, 5))
 		screen.blit(y_vel, (1010, 5))
+		screen.blit(score, (10, 5))
 
 		pygame.display.flip()
 		fpsClock.tick(fps)
