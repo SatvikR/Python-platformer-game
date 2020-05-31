@@ -41,12 +41,15 @@ class Player():
 
 		for platform in platform_list:
 			if self.rect.colliderect(platform.rect):
-				if self.y_velocity > 0 and platform.y > self.y + self.rect.height * 0.7:
+				if self.y_velocity > 0 and platform.y + platform.rect.height * 0.2 > self.y + self.rect.height * 0.8:
 					self.y = platform.y - self.rect.height
 					self.y_velocity = 0
 				elif self.y_velocity < 0:
 					self.y_velocity = 1.2
-					
+				elif self.x_velocity > 0 and platform.rect.x > self.x:
+					self.x_velocity = 0
+				elif self.x_velocity < 0 and platform.rect.x < self.x:
+					self.x_velocity = 0
 
 		if self.y + self.img.get_height() >= height + 1000: # increasing this number will increase the delay on falling off the map
 			self.x = self.start_x
@@ -92,7 +95,7 @@ def game_loop():
 
 	while True:
 		for event in pygame.event.get():
-			if event.type == QUIT:
+			if event.type == QUIT:	
 				pygame.quit()
 				sys.exit()
 
@@ -103,6 +106,9 @@ def game_loop():
 			player.x_velocity = player.walk_speed
 		if not key[pygame.K_d] and not key[pygame.K_a]:
 			player.x_velocity = 0
+		if key[pygame.K_F4] and key[pygame.K_LALT]:
+			pygame.quit()
+			sys.exit()
 			
 		if key[pygame.K_SPACE]:
 			player.jump()
