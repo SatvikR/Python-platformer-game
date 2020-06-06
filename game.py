@@ -19,9 +19,9 @@ coin_img = pygame.image.load("./assets/images/coin.png")
 stat_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 24)
 score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
 
-class Player():
+class Player:
 	walk_speed = 8
-	start_x = 100
+	start_x = width / 2
 	start_y = 200
 	jump_velocity = 27.5 # Increase this value to jump higher
 	def __init__(self, img, x, y):
@@ -41,32 +41,37 @@ class Player():
 			screen.blit(self.img, (self.x, self.y))
 
 	def update_physics(self, platform_list, coin_list):
-		self.y_velocity += 1.2
+		collided = False
 
 		for platform in platform_list:
 			if self.rect.colliderect(platform.rect):
-				if self.y_velocity > 0 and platform.y + platform.rect.height * 0.2 > self.y + self.rect.height * 0.8:
-					self.y = platform.y - self.rect.height
+				collided = True
+				if self.y_velocity > 0 and platform.y + platform.rect.height * 0.2 > self.y + self.rect.height * 0.8: 
+					self.y = platform.y - self.rect.height + 1.2
+					print(self.y_velocity)
 					self.y_velocity = 0
 				elif self.y_velocity < 0:
 					self.y_velocity = 1.2
 				elif self.x_velocity > 0 and platform.rect.x > self.x:
 					self.x_velocity = 0
-				elif self.x_velocity < 0 and platform.rect.x < self.x:
+				elif self.x_velocity < 0 and platform.rect.x < self.x and self.y != platform.y - self.rect.height + 1.2:
 					self.x_velocity = 0
+	
+		if not collided:
+			self.y_velocity += 1.2
 
 		for coin in coin_list:
 			if self.rect.colliderect(coin.rect):
 				self.score += 1
 				coin_list.remove(coin) 
 
-		if self.y + self.img.get_height() >= height + 1000: # increasing this number will increase the delay on falling off the map
+		'''if self.y + self.img.get_height() >= height + 1000: # increasing this number will increase the delay on falling off the map
 			self.x = self.start_x
 			self.y = self.start_y
-			self.y_velocity = 0 
+			self.y_velocity = 0 '''
 
 		if self.y_velocity < 0 and self.y <= 0:
-			self.y_velocity = 1.2
+			self.y_velocity = 1.2 #...#
 
 		if self.x_velocity > 0:
 			if self.x + self.rect.width < width:
@@ -75,13 +80,32 @@ class Player():
 			if self.x > 0:
 				self.x += self.x_velocity
 		
-		self.y += self.y_velocity
+		# self.y += self.y_velocity
+		if self.y_velocity < 0:
+			for platform in platform_list:
+				platform.y += -self.y_velocity
+				platform.rect.y += -self.y_velocity
+			for coin in coin_list:
+				coin.y += -self.y_velocity
+				coin.rect.y += -self.y_velocity
+		else:
+			self.y += self.y_velocity
+			if self.y > height * 0.7:
+				for platform in platform_list:
+					platform.y += -self.y_velocity
+					platform.rect.y += -self.y_velocity
+				for coin in coin_list:
+					coin.y += -self.y_velocity
+					coin.rect.y += -self.y_velocity
 		
 	def jump(self):
 		if self.y_velocity == 0:
 			self.y_velocity = -self.jump_velocity
+			self.y += self.y_velocity
+			self.y_velocity += 1.2
+			self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
-class Platform(): #Platform + former = platformer
+class Platform: #Platform + former = platformer
 	def __init__(self, x, y, img):
 		self.x = x
 		self.y = y
@@ -97,7 +121,7 @@ class Platform(): #Platform + former = platformer
 			platform.draw(screen)
 
 
-class Coin():
+class Coin:
 	def __init__(self, img, x, y):
 		self.img = img
 		self.x = x
@@ -122,7 +146,7 @@ def game_loop():
 	platforms.append(Platform(60, 700, ground_img))
 	platforms.append(Platform(800, 600, platform_one))
 	platforms.append(Platform(200, 400, platform_two))
-	platforms.append(Platform(900, 250, platform_three))
+	platforms.append(Platform(900, -200, platform_three))
 	
 	coins.append(Coin(coin_img, 300, 325))
 	coins.append(Coin(coin_img, 1000, 175))
