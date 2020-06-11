@@ -22,7 +22,7 @@ score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
 class Player():
 	walk_speed = 8
 	start_x = 100
-	start_y = 200
+	start_y = 400
 	jump_velocity = 27.5 # Increase this value to jump higher
 	def __init__(self, img, x, y):
 		self.img = img
@@ -46,7 +46,7 @@ class Player():
 		for platform in platform_list:
 			if self.rect.colliderect(platform.rect):
 				if self.y_velocity > 0 and platform.y + platform.rect.height * 0.2 > self.y + self.rect.height * 0.8:
-					self.y = platform.y - self.rect.height
+					self.y = platform.y - self.rect.height + 1.2
 					self.y_velocity = 0
 				elif self.y_velocity < 0:
 					self.y_velocity = 1.2
@@ -65,9 +65,6 @@ class Player():
 			self.y = self.start_y
 			self.y_velocity = 0 
 
-		if self.y_velocity < 0 and self.y <= 0:
-			self.y_velocity = 1.2
-
 		if self.x_velocity > 0:
 			if self.x + self.rect.width < width:
 				self.x += self.x_velocity
@@ -80,6 +77,26 @@ class Player():
 	def jump(self):
 		if self.y_velocity == 0:
 			self.y_velocity = -self.jump_velocity
+			self.y += self.y_velocity
+			self.y_velocity += 1.2
+			self.rect = self.img.get_rect(topleft=(self.x, self.y))
+
+
+class Camera():
+	def draw_and_scroll(self, player, coins, platforms, screen):
+		offset = player.start_y - player.y
+		player.rect = player.img.get_rect(topleft=(player.x, player.y))
+		if player.x_velocity < 0:
+			screen.blit(pygame.transform.flip(player.img, True, False), (player.x, player.y + offset))
+		else:
+			screen.blit(player.img, (player.x, player.y + offset))
+
+		for plat in platforms:
+			screen.blit(plat.img, (plat.x, plat.y + offset))
+
+		for coin in coins:
+			screen.blit(coin.img, (coin.x, coin.y + offset))
+
 
 class Platform(): #Platform + former = platformer
 	def __init__(self, x, y, img):
@@ -127,6 +144,8 @@ def game_loop():
 	coins.append(Coin(coin_img, 300, 325))
 	coins.append(Coin(coin_img, 1000, 175))
 
+	camera = Camera()
+
 	while True:
 		for event in pygame.event.get():
 			if event.type == QUIT:	
@@ -152,10 +171,11 @@ def game_loop():
 		# DRAW
 		screen.fill((47, 47, 47))
 
-		player.draw(screen)
-		Coin.draw_all(coins, screen)
+		#player.draw(screen)
+		#Coin.draw_all(coins, screen)
 
-		Platform.draw_all(platforms, screen)
+		#Platform.draw_all(platforms, screen)
+		camera.draw_and_scroll(player, coins, platforms, screen)
 
 		x_vel = stat_font.render("PLAYER_X_VEL: " + str(player.x_velocity), True, (255, 255, 255))
 		y_vel = stat_font.render("PLAYER_Y_VEL: " + str(int(player.y_velocity)), True, (255, 255, 255))
