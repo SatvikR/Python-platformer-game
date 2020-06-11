@@ -22,7 +22,7 @@ score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
 class Player():
 	walk_speed = 8
 	start_x = 100
-	start_y = 400
+	start_y = 500
 	jump_velocity = 27.5 # Increase this value to jump higher
 	def __init__(self, img, x, y):
 		self.img = img
