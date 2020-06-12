@@ -40,10 +40,10 @@ class Player():
 		else:
 			screen.blit(self.img, (self.x, self.y))
 
-	def update_physics(self, platform_list, coin_list):
+	def update_physics(self):
 		self.y_velocity += 1.2
 
-		for platform in platform_list:
+		for platform in Platform.platforms:
 			if self.rect.colliderect(platform.rect):
 				if self.y_velocity > 0 and platform.y + platform.rect.height * 0.2 > self.y + self.rect.height * 0.8:
 					self.y = platform.y - self.rect.height + 1.2
@@ -55,10 +55,10 @@ class Player():
 				elif self.x_velocity < 0 and platform.rect.x < self.x:
 					self.x_velocity = 0
 
-		for coin in coin_list:
+		for coin in Coin.coins:
 			if self.rect.colliderect(coin.rect):
 				self.score += 1
-				coin_list.remove(coin) 
+				Coin.coins.remove(coin) 
 
 		if self.y + self.img.get_height() >= height + 1000: # increasing this number will increase the delay on falling off the map
 			self.x = self.start_x
@@ -83,7 +83,7 @@ class Player():
 
 
 class Camera():
-	def draw_and_scroll(self, player, coins, platforms, screen):
+	def draw_and_scroll(self, player, screen):
 		offset = player.start_y - player.y
 		player.rect = player.img.get_rect(topleft=(player.x, player.y))
 		if player.x_velocity < 0:
@@ -91,19 +91,22 @@ class Camera():
 		else:
 			screen.blit(player.img, (player.x, player.y + offset))
 
-		for plat in platforms:
+		for plat in Platform.platforms:
 			screen.blit(plat.img, (plat.x, plat.y + offset))
 
-		for coin in coins:
+		for coin in Coin.coins:
 			screen.blit(coin.img, (coin.x, coin.y + offset))
 
 
 class Platform(): #Platform + former = platformer
+	platforms = []
+
 	def __init__(self, x, y, img):
 		self.x = x
 		self.y = y
 		self.img = img
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
+		self.platforms.append(self)
 
 	def draw(self, screen):
 		screen.blit(self.img, (self.x, self.y))
@@ -115,12 +118,15 @@ class Platform(): #Platform + former = platformer
 
 
 class Coin():
+	coins = []
+
 	def __init__(self, img, x, y):
 		self.img = img
 		self.x = x
 		self.y = y
 		self.y_velocity = -10
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
+		self.coins.append(self)
 		
 	def draw(self, screen):
 		screen.blit(self.img, (self.x, self.y))
@@ -136,13 +142,13 @@ def game_loop():
 	platforms = []
 	coins = []
 
-	platforms.append(Platform(60, 700, ground_img))
-	platforms.append(Platform(800, 600, platform_one))
-	platforms.append(Platform(200, 400, platform_two))
-	platforms.append(Platform(900, 250, platform_three))
+	Platform(60, 700, ground_img)
+	Platform(800, 600, platform_one)
+	Platform(200, 400, platform_two)
+	Platform(900, 250, platform_three)
 	
-	coins.append(Coin(coin_img, 300, 325))
-	coins.append(Coin(coin_img, 1000, 175))
+	Coin(coin_img, 300, 325)
+	Coin(coin_img, 1000, 175)
 
 	camera = Camera()
 
@@ -166,16 +172,12 @@ def game_loop():
 		if key[pygame.K_SPACE]:
 			player.jump()
 		# UPDATE
-		player.update_physics(platforms, coins)
+		player.update_physics()
 
 		# DRAW
 		screen.fill((47, 47, 47))
 
-		#player.draw(screen)
-		#Coin.draw_all(coins, screen)
-
-		#Platform.draw_all(platforms, screen)
-		camera.draw_and_scroll(player, coins, platforms, screen)
+		camera.draw_and_scroll(player, screen)
 
 		x_vel = stat_font.render("PLAYER_X_VEL: " + str(player.x_velocity), True, (255, 255, 255))
 		y_vel = stat_font.render("PLAYER_Y_VEL: " + str(int(player.y_velocity)), True, (255, 255, 255))
