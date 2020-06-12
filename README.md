@@ -7,3 +7,5 @@ Made with python 3! (you need to have pygame installed obviousely)
 The art is made my me with Paint3d (The best software available)
 <br><br>
 This project was made in collaboration with Alexandre2006
+<br>
+America's president is a joke!
