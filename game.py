@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import sys
 import random
+import json
 
 pygame.init()
 fps = 60
@@ -66,11 +67,17 @@ class Player():
 			Platform.add_plats(15)
 
 		if self.y + self.img.get_height() >= height - self.death_bar: # increasing this number will increase the delay on falling off the map
+			highscores = read_data('highscore.json')
+			if highscores['high'] < self.high:
+				highscores['high'] = self.high
+
+			dump_data('highscore.json', highscores)
 			self.x = self.start_x
 			self.y = self.start_y
 			self.x_velocity = 0
 			self.score = 0
 			self.y_velocity = 0
+			self.high = 0
 			main_menu() 
 
 		if self.x_velocity > 0:
@@ -168,6 +175,15 @@ class Coin():
 	def draw_all(coin_list, screen):
 		for coin in coin_list:
 			coin.draw(screen)
+
+def dump_data(file, data):
+	with open(file, 'w') as out:
+		json.dump(data, out, indent=4)
+
+def read_data(file):
+	with open(file, 'r') as f:
+		return json.load(f)
+
 
 
 def game_loop():
