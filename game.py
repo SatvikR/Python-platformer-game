@@ -246,8 +246,12 @@ def main_menu():
 					game_loop()
 
 		screen.fill((47, 47, 47))
+
+		highscore = read_data('highscore.json')['high']
+
 		title = title_font.render("Spicy Meatballs!", True, (255, 255, 255))
 		startinstructions = title_font.render("Press SPACE to play!", True, (255, 255, 255))
+		highscore = title_font.render("Highscore " + str(highscore), True, (255, 255, 255))
 
 		screen.blit(title, (width / 2 - title.get_width() / 2, 100))
 		screen.blit(startinstructions, (width / 2 - startinstructions.get_width() / 2, height - 75))
@@ -255,6 +259,8 @@ def main_menu():
 			player_img, 
 			(player_img.get_width() * 3, player_img.get_height() * 3)), 
 			(width / 1.5 + 100, 300))
+
+		screen.blit(highscore, (100, 500))
 
 		pygame.display.flip()
 		fpsClock.tick(fps)
