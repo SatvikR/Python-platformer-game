@@ -17,3 +17,5 @@ This project was made in collaboration with Alexandre2006
 - Oranges
 - Maybe even some pumpkin pie
 - [Clickbait](https://memeguy.com/photos/images/how-to-get-rich-quick-287554.jpg "How to get rich quick")
+
+Made in collaboration with Alexandre2006
