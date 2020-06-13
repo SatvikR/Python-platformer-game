@@ -21,6 +21,8 @@ coin_img = pygame.image.load("./assets/images/coin.png")
 stat_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 24)
 score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
 title_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 70)
+highscore_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 50)
+message_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 35)
 
 class Player():
 	walk_speed = 10
@@ -66,12 +68,14 @@ class Player():
 		if self.score == len(Platform.platforms) - 2:
 			Platform.add_plats(15)
 
-		if self.y + self.img.get_height() >= height - self.death_bar: # increasing this number will increase the delay on falling off the map
+		if self.score < self.high - 4: # increasing this number will increase the delay on falling off the map
 			highscores = read_data('highscore.json')
 			if highscores['high'] < self.high:
 				highscores['high'] = self.high
+				dump_data('highscore.json', highscores)
+				enter_score()
 
-			dump_data('highscore.json', highscores)
+			
 			self.x = self.start_x
 			self.y = self.start_y
 			self.x_velocity = 0
@@ -189,19 +193,14 @@ def read_data(file):
 def game_loop():
 	player = Player(player_img, Player.start_x, Player.start_y)
 
-
 	Platform.create_plates(15)
 
-	#Coin(coin_img, 300, 325)
-	#Coin(coin_img, 1000, 175)
-
 	camera = Camera()
-
-	while True:
+	running = True
+	while running:
 		for event in pygame.event.get():
 			if event.type == QUIT:	
-				pygame.quit()
-				exit()
+				running = False				
 
 		key = pygame.key.get_pressed()
 		if key[pygame.K_a]:
@@ -211,8 +210,7 @@ def game_loop():
 		if not key[pygame.K_d] and not key[pygame.K_a]:
 			player.x_velocity = 0
 		if key[pygame.K_F4] and key[pygame.K_LALT]:
-			pygame.quit()
-			sys.exit()
+			running = False
 
 		if key[pygame.K_SPACE]:
 			player.jump()
@@ -226,7 +224,7 @@ def game_loop():
 
 		x_vel = stat_font.render("PLAYER_X_VEL: " + str(player.x_velocity), True, (255, 255, 255))
 		y_vel = stat_font.render("PLAYER_Y_VEL: " + str(int(player.y_velocity)), True, (255, 255, 255))
-		score = score_font.render("SCORE: " + str(player.score), True, (255, 255, 255))
+		score = score_font.render("SCORE: " + str(player.high), True, (255, 255, 255))
 
 		screen.blit(x_vel, (800, 5))
 		screen.blit(y_vel, (1010, 5))
@@ -234,13 +232,16 @@ def game_loop():
 
 		pygame.display.flip()
 		fpsClock.tick(fps)
+	pygame.quit()
+	sys.exit(0)
 
 def main_menu():
-	while True:
+	running = True
+	while running:
 		for event in pygame.event.get():
 			if event.type == QUIT:
-				pygame.quit()
-				exit()
+				running = False
+				
 			elif event.type == KEYDOWN:
 				if event.key == pygame.K_SPACE:
 					game_loop()
@@ -248,10 +249,13 @@ def main_menu():
 		screen.fill((47, 47, 47))
 
 		highscore = read_data('highscore.json')['high']
+		high_player = read_data('highscore.json')['name']
 
 		title = title_font.render("Spicy Meatballs!", True, (255, 255, 255))
 		startinstructions = title_font.render("Press SPACE to play!", True, (255, 255, 255))
-		highscore = title_font.render("Highscore " + str(highscore), True, (255, 255, 255))
+		highscore_title = highscore_font.render("Highscore: ", True, (255, 255, 255))
+		highscore = highscore_font.render(str(int(highscore)), True, (255, 255, 255))
+		name = highscore_font.render(high_player, True, (255, 255, 255))
 
 		screen.blit(title, (width / 2 - title.get_width() / 2, 100))
 		screen.blit(startinstructions, (width / 2 - startinstructions.get_width() / 2, height - 75))
@@ -260,9 +264,55 @@ def main_menu():
 			(player_img.get_width() * 3, player_img.get_height() * 3)), 
 			(width / 1.5 + 100, 300))
 
-		screen.blit(highscore, (100, 500))
+		pygame.draw.rect(screen, (25, 25, 25), pygame.Rect((75, 275), (400, 100)))
+		pygame.draw.line(screen, (255, 255, 255), (225, 300), (225, 340), 5)
+		screen.blit(highscore, (100, 300))
+		screen.blit(highscore_title,  (100, 225))
+		screen.blit(name, (300, 300))
 
 		pygame.display.flip()
 		fpsClock.tick(fps)
+
+	pygame.quit()
+	sys.exit(0)
+
+def enter_score():
+	running = True
+	text = ''
+	while running:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				running = False
+			elif event.type == KEYDOWN:
+				if event.key == pygame.K_BACKSPACE:
+					text = text[:-1]
+				elif event.key == pygame.K_RETURN:
+					data = read_data('highscore.json')
+					data['name'] = text.upper()
+					dump_data('highscore.json', data)
+					main_menu()
+				else:
+					if len(text) < 3:
+						text += event.unicode
+
+
+		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
+		pygame.draw.rect(screen, (255, 255, 255), pygame.Rect((width * 0.3 + 15, height * 0.3 + 80), (width * 0.4 - 30, height * 0.4 - 170)))
+
+		message = message_font.render("Congrats, you got a highscore!", True, (255, 255, 255))
+		prompt = message_font.render("Enter Your Initials:", True, (255, 255, 255))
+		current = highscore_font.render(text.upper(), True, (0, 0, 0))
+		enter = message_font.render("Press enter/return to submit", True, (255, 255, 255))
+
+		screen.blit(message, ((width / 2) - (message.get_width() / 2) , height * 0.3 + 10))
+		screen.blit(prompt, ((width / 2) - (message.get_width() / 2), height * 0.3 + 40))
+		screen.blit(current, (width * 0.3 + 25, height * 0.3 + 95))
+		screen.blit(enter, (width * 0.3 + 20, height * 0.7 + - 50))
+		pygame.display.flip()
+		fpsClock.tick(fps)
+
+	pygame.quit()
+	sys.exit(0)
+
 if __name__ == "__main__":
 	main_menu()

@@ -9,6 +9,7 @@ __pycache__/
 
 # IDE STUFF
 .vscode/
+launch.json
 
 #highscore
 highscore.json
