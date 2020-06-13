@@ -22,7 +22,7 @@ score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
 title_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 70)
 
 class Player():
-	walk_speed = 8
+	walk_speed = 10
 	start_x = 100
 	start_y = 500
 	jump_velocity = 27.5 # Increase this value to jump higher
@@ -34,6 +34,8 @@ class Player():
 		self.x_velocity = 0
 		self.score = 0
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
+		self.death_bar = 0
+		self.high = 0
 
 	def draw(self, screen):
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
@@ -45,6 +47,9 @@ class Player():
 	def update_physics(self):
 		self.y_velocity += 1.2
 		self.score = (700 - self.y) // 275
+		if self.score > self.high:
+			self.high = self.score
+		self.death_bar = (self.high - 1) * 250 if self.score < 5 else (self.high - 5) * 250
 		for platform in Platform.platforms:
 			if self.rect.colliderect(platform.rect):
 				if self.y_velocity > 0 and platform.y + platform.rect.height * 0.2 > self.y + self.rect.height * 0.8:
@@ -60,7 +65,7 @@ class Player():
 		if self.score == len(Platform.platforms) - 2:
 			Platform.add_plats(15)
 
-		if self.y + self.img.get_height() >= height: # increasing this number will increase the delay on falling off the map
+		if self.y + self.img.get_height() >= height - self.death_bar: # increasing this number will increase the delay on falling off the map
 			self.x = self.start_x
 			self.y = self.start_y
 			self.x_velocity = 0
@@ -127,8 +132,8 @@ class Platform(): #Platform + former = platformer
 	def add_plats(amount):
 		base_y = 700
 		max_x = width - platform_two.get_width()
-		for i in (len(Platform.platforms), len(Platform.platforms) + 0 + amount):
-			print(len(Platform.platforms), len(Platform.platforms) + 0 + amount)
+		for i in range(len(Platform.platforms), len(Platform.platforms) + amount):
+			print(i, len(Platform.platforms) + 0 + amount)
 			random.seed()
 			Platform(random.randint(0, max_x), (base_y) - i * 275, platform_two)
 
