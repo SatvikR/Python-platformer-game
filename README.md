@@ -8,8 +8,6 @@ The art is made my me with Paint3d (The best software available)
 <br>
 This project was made in collaboration with Alexandre2006
 <br>
-America's president is a joke!
-<br>
 ## Necessary Modules
 - pygame: install with ```pip install pygame```
     OR ```pip3 install pygame```
@@ -18,4 +16,4 @@ America's president is a joke!
 - Bananas
 - Oranges
 - Maybe even some pumpkin pie
-- Clickbait
+- [Clickbait](https://memeguy.com/photos/images/how-to-get-rich-quick-287554.jpg "How to get rich quick")
