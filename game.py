@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import sys
+import random
 
 pygame.init()
 fps = 60
@@ -18,6 +19,7 @@ platform_three = pygame.image.load("./assets/images/platform_3.png")
 coin_img = pygame.image.load("./assets/images/coin.png")
 stat_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 24)
 score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
+title_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 70)
 
 class Player():
 	walk_speed = 8
@@ -42,7 +44,7 @@ class Player():
 
 	def update_physics(self):
 		self.y_velocity += 1.2
-
+		self.score = (700 - self.y) // 275
 		for platform in Platform.platforms:
 			if self.rect.colliderect(platform.rect):
 				if self.y_velocity > 0 and platform.y + platform.rect.height * 0.2 > self.y + self.rect.height * 0.8:
@@ -55,15 +57,16 @@ class Player():
 				elif self.x_velocity < 0 and platform.rect.x < self.x:
 					self.x_velocity = 0
 
-		for coin in Coin.coins:
-			if self.rect.colliderect(coin.rect):
-				self.score += 1
-				Coin.coins.remove(coin) 
+		if self.score == len(Platform.platforms) - 2:
+			Platform.add_plats(15)
 
-		if self.y + self.img.get_height() >= height + 1000: # increasing this number will increase the delay on falling off the map
+		if self.y + self.img.get_height() >= height: # increasing this number will increase the delay on falling off the map
 			self.x = self.start_x
 			self.y = self.start_y
-			self.y_velocity = 0 
+			self.x_velocity = 0
+			self.score = 0
+			self.y_velocity = 0
+			main_menu() 
 
 		if self.x_velocity > 0:
 			if self.x + self.rect.width < width:
@@ -91,8 +94,7 @@ class Camera():
 		else:
 			screen.blit(player.img, (player.x, player.y + offset))
 
-		for plat in Platform.platforms:
-			screen.blit(plat.img, (plat.x, plat.y + offset))
+		[plat.draw(screen, offset) for plat in Platform.platforms]
 
 		for coin in Coin.coins:
 			screen.blit(coin.img, (coin.x, coin.y + offset))
@@ -107,14 +109,40 @@ class Platform(): #Platform + former = platformer
 		self.img = img
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		self.platforms.append(self)
+		self.moving = bool(random.randint(0, 1))
+		self.x_vel = random.randint(2,6)
 
-	def draw(self, screen):
-		screen.blit(self.img, (self.x, self.y))
+	def draw(self, screen, offset):
+		self.update()
+		screen.blit(self.img, (self.x, self.y + offset))
+
+	def update(self):
+		if self.moving:
+			if self.x + self.rect.width > width or self.x < 0:
+				self.x_vel *= -1
+			self.x += self.x_vel
+			self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
 	@staticmethod
-	def draw_all(platform_list, screen):
-		for platform in platform_list:
-			platform.draw(screen)
+	def add_plats(amount):
+		base_y = 700
+		max_x = width - platform_two.get_width()
+		for i in (len(Platform.platforms), len(Platform.platforms) + 0 + amount):
+			print(len(Platform.platforms), len(Platform.platforms) + 0 + amount)
+			random.seed()
+			Platform(random.randint(0, max_x), (base_y) - i * 275, platform_two)
+
+
+	@staticmethod
+	def create_plates(amount):
+		Platform.platforms.clear()
+		Platform(60, 700, ground_img)
+		max_x = width - platform_two.get_width()
+		base_y = 700
+		for i in range(1, amount + 1):
+			random.seed()
+			Platform(random.randint(0, max_x), (base_y) - i * 275, platform_two)
+
 
 
 class Coin():
@@ -139,16 +167,12 @@ class Coin():
 
 def game_loop():
 	player = Player(player_img, Player.start_x, Player.start_y)
-	platforms = []
-	coins = []
 
-	Platform(60, 700, ground_img)
-	Platform(800, 600, platform_one)
-	Platform(200, 400, platform_two)
-	Platform(900, 250, platform_three)
-	
-	Coin(coin_img, 300, 325)
-	Coin(coin_img, 1000, 175)
+
+	Platform.create_plates(15)
+
+	#Coin(coin_img, 300, 325)
+	#Coin(coin_img, 1000, 175)
 
 	camera = Camera()
 
@@ -156,7 +180,7 @@ def game_loop():
 		for event in pygame.event.get():
 			if event.type == QUIT:	
 				pygame.quit()
-				sys.exit()
+				exit()
 
 		key = pygame.key.get_pressed()
 		if key[pygame.K_a]:
@@ -190,5 +214,28 @@ def game_loop():
 		pygame.display.flip()
 		fpsClock.tick(fps)
 
+def main_menu():
+	while True:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				pygame.quit()
+				exit()
+			elif event.type == KEYDOWN:
+				if event.key == pygame.K_SPACE:
+					game_loop()
+
+		screen.fill((47, 47, 47))
+		title = title_font.render("Spicy Meatballs!", True, (255, 255, 255))
+		startinstructions = title_font.render("Press SPACE to play!", True, (255, 255, 255))
+
+		screen.blit(title, (width / 2 - title.get_width() / 2, 100))
+		screen.blit(startinstructions, (width / 2 - startinstructions.get_width() / 2, height - 75))
+		screen.blit(pygame.transform.scale(
+			player_img, 
+			(player_img.get_width() * 3, player_img.get_height() * 3)), 
+			(width / 1.5 + 100, 300))
+
+		pygame.display.flip()
+		fpsClock.tick(fps)
 if __name__ == "__main__":
-	game_loop()
+	main_menu()
