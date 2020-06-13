@@ -10,6 +10,8 @@ __pycache__/
 # IDE STUFF
 .vscode/
 
+#highscore
+highscore.json
 
 # Distribution / packaging
 .Python
