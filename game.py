@@ -18,6 +18,7 @@ platform_one = pygame.image.load("./assets/images/platform_1.png")
 platform_two = pygame.image.load("./assets/images/platform_2.png")
 platform_three = pygame.image.load("./assets/images/platform_3.png")
 coin_img = pygame.image.load("./assets/images/coin.png")
+heart_img = pygame.image.load("./assets/images/heart.png")
 stat_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 24)
 score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
 title_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 70)
@@ -100,6 +101,13 @@ class Player():
 			self.y_velocity += 1.2
 			self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
+	def draw_hearts(self, screen):
+		heart_width = heart_img.get_width() + 3
+		for i in range(0, 5 - int(self.high - self.score)):
+			screen.blit(heart_img, (
+				width - (5 * heart_width) + i * heart_width,
+				5
+			))
 
 class Camera():
 	def draw_and_scroll(self, player, screen):
@@ -189,7 +197,6 @@ def read_data(file):
 		return json.load(f)
 
 
-
 def game_loop():
 	player = Player(player_img, Player.start_x, Player.start_y)
 
@@ -225,9 +232,11 @@ def game_loop():
 		x_vel = stat_font.render("PLAYER_X_VEL: " + str(player.x_velocity), True, (255, 255, 255))
 		y_vel = stat_font.render("PLAYER_Y_VEL: " + str(int(player.y_velocity)), True, (255, 255, 255))
 		score = score_font.render("SCORE: " + str(player.high), True, (255, 255, 255))
+		#print(score.get_height())
 
-		screen.blit(x_vel, (800, 5))
-		screen.blit(y_vel, (1010, 5))
+		#screen.blit(x_vel, (800, 5))
+		#screen.blit(y_vel, (1010, 5))
+		player.draw_hearts(screen)
 		screen.blit(score, (10, 5))
 
 		pygame.display.flip()
