@@ -40,6 +40,7 @@ class Player():
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		self.death_bar = 0
 		self.high = 0
+		self.hearts = 5
 
 	def draw(self, screen):
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
@@ -47,6 +48,15 @@ class Player():
 			screen.blit(pygame.transform.flip(self.img, True, False), (self.x, self.y))
 		else:
 			screen.blit(self.img, (self.x, self.y))
+
+	def reset(self):
+		self.x = self.start_x
+		self.y = self.start_y
+		self.x_velocity = 0
+		self.score = 0
+		self.y_velocity = 0
+		self.high = 0
+		self.hearts = 5
 
 	def update_physics(self):
 		self.y_velocity += 1.2
@@ -77,12 +87,6 @@ class Player():
 				enter_score()
 
 			
-			self.x = self.start_x
-			self.y = self.start_y
-			self.x_velocity = 0
-			self.score = 0
-			self.y_velocity = 0
-			self.high = 0
 			main_menu() 
 
 		if self.x_velocity > 0:
@@ -92,6 +96,7 @@ class Player():
 			if self.x > 0:
 				self.x += self.x_velocity
 		
+		self.hearts = 5 - int(self.high - self.score)
 		self.y += self.y_velocity
 		
 	def jump(self):
@@ -103,7 +108,7 @@ class Player():
 
 	def draw_hearts(self, screen):
 		heart_width = heart_img.get_width() + 3
-		for i in range(0, 5 - int(self.high - self.score)):
+		for i in range(0, self.hearts):
 			screen.blit(heart_img, (
 				width - (5 * heart_width) + i * heart_width,
 				5
@@ -208,7 +213,10 @@ def game_loop():
 		for event in pygame.event.get():
 			if event.type == QUIT:	
 				running = False				
-
+			elif event.type == KEYDOWN:
+				if event.key == pygame.K_ESCAPE:
+					pause()
+			
 		key = pygame.key.get_pressed()
 		if key[pygame.K_a]:
 			player.x_velocity = -player.walk_speed
@@ -307,6 +315,7 @@ def enter_score():
 
 		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
 		pygame.draw.rect(screen, (255, 255, 255), pygame.Rect((width * 0.3 + 15, height * 0.3 + 80), (width * 0.4 - 30, height * 0.4 - 170)))
+		pygame.draw.rect(screen, (47, 47, 47), pygame.Rect((width - 200, 0), (200, 35)))
 
 		message = message_font.render("Congrats, you got a highscore!", True, (255, 255, 255))
 		prompt = message_font.render("Enter Your Initials:", True, (255, 255, 255))
@@ -322,6 +331,43 @@ def enter_score():
 
 	pygame.quit()
 	sys.exit(0)
+
+def pause():
+	running = True
+	while running:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				running = False
+			elif event.type == KEYDOWN:
+				if event.key == pygame.K_RETURN:
+					return
+			elif event.type == MOUSEBUTTONDOWN:
+				x, y = pygame.mouse.get_pos()
+				if width * 0.3 + 75 < x < width * 0.7 - 75 and height * 0.3 + 150 < y < height * 0.3 + 200:
+					main_menu()
+
+		menu_button = pygame.Rect((width * 0.3 + 75, height * 0.3 + 150), ((width * 0.4 - 150, 50)))
+		x, y = pygame.mouse.get_pos()
+		if width * 0.3 + 75 < x < width * 0.7 - 75 and height * 0.3 + 150 < y < height * 0.3 + 200:
+			button_color = (168, 226, 255)
+		else:
+			button_color = (255, 255, 255)
+
+		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
+		pygame.draw.rect(screen, button_color, menu_button)
+
+		message = message_font.render("Press Enter/Return to resume...", True, (255, 255, 255))
+		prompt = message_font.render("Main Menu", True, (0, 0, 0))
+
+		screen.blit(message, (width / 2 - message.get_width() / 2,  height * 0.3 + 25))
+		screen.blit(prompt, (width / 2 - prompt.get_width() / 2, height * 0.3 + 150 + ((50 - prompt.get_height()) / 2)))
+
+		pygame.display.flip()
+		fpsClock.tick(fps)
+
+	pygame.quit()
+	sys.exit(0)
+
 
 if __name__ == "__main__":
 	main_menu()
