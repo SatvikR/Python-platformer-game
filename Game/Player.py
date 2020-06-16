@@ -30,13 +30,10 @@ class Player:
 			screen.blit(self.img, (self.x, self.y))
 
 	def update_physics(self, screen):
+
+		self.y += self.y_velocity
 		self.y_velocity += 1.2
-
-		self.score = (700 - self.y) // 275 # Calculate current score based on y_pos
-		if self.score > self.high:
-			self.high = self.score
-
-		self.hearts = 5 - int(self.high - self.score)
+		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
 		for platform in Platform.platforms: # Checks collisions in all direction and changes velocity accordingly
 			if self.rect.colliderect(platform.rect):
@@ -50,6 +47,23 @@ class Player:
 				elif self.x_velocity < 0 and platform.rect.x < self.x:
 					self.x_velocity = 0
 
+		
+		if self.x_velocity > 0: # Check within screen bounds
+			if self.x + self.rect.width < screen.get_width():
+				self.x += self.x_velocity
+		elif self.x_velocity < 0:
+			if self.x > 0:
+				self.x += self.x_velocity
+		
+		self.score = (700 - self.y) // 275 # Calculate current score based on y_pos
+		if self.score > self.high:
+			self.high = self.score
+
+		self.hearts = 5 - int(self.high - self.score)
+
+
+
+
 		for coin in Coin.coins:
 			if self.rect.colliderect(coin.rect):
 				self.coins += 1
@@ -61,15 +75,8 @@ class Player:
 
 		if self.score == len(Platform.platforms) - 2: # Add more platforms when close to top of current platforms
 			Platform.add_plats(15, screen)
-
-		if self.x_velocity > 0: # Check within screen bounds
-			if self.x + self.rect.width < screen.get_width():
-				self.x += self.x_velocity
-		elif self.x_velocity < 0:
-			if self.x > 0:
-				self.x += self.x_velocity
 		
-		self.y += self.y_velocity
+
 		
 	def jump(self): # Jump if touching grounds
 		if self.y_velocity == 0:
