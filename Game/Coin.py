@@ -1,6 +1,6 @@
 import pygame
 
-class Coin():
+class Coin:
 	coins = []
 
 	def __init__(self, img, x, y):

@@ -3,7 +3,15 @@ from pygame.locals import *
 import sys
 import random
 import json
-from Game import Coin, Player, Platform, Camera, dump_data, read_data
+from Game import (
+	Coin,
+	Player, 
+	Platform, 
+	Camera, 
+	Button,
+	dump_data, 
+	read_data
+)
 
 pygame.init()
 fps = 60
@@ -24,7 +32,7 @@ highscore_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 50)
 message_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 35)
 
 
-def main_menu():
+def main_menu(): #  Starting Menu
 	running = True
 	while running:
 		for event in pygame.event.get():
@@ -65,7 +73,7 @@ def main_menu():
 	pygame.quit()
 	sys.exit(0)
 
-def enter_score():
+def enter_score(): # Prompt that appears when a player gets a highscore
 	running = True
 	text = ''
 	while running:
@@ -104,8 +112,8 @@ def enter_score():
 	pygame.quit()
 	sys.exit(0)
 
-def game_loop():
-	player = Player(player_img, Player.start_x, Player.start_y, main_menu, enter_score)
+def game_loop(): # Main game loop
+	player = Player(player_img, Player.start_x, Player.start_y)
 
 	Platform.create_plates(15, screen)
 
@@ -134,6 +142,15 @@ def game_loop():
 		# UPDATE
 		player.update_physics(screen)
 
+		if player.hearts <= 0:
+			highscores = read_data('highscore.json')
+			if highscores['high'] < player.high:
+				highscores['high'] = player.high
+				dump_data('highscore.json', highscores)
+				enter_score()
+
+			main_menu()
+
 		# DRAW
 		screen.fill((47, 47, 47))
 
@@ -142,10 +159,7 @@ def game_loop():
 		x_vel = stat_font.render("PLAYER_X_VEL: " + str(player.x_velocity), True, (255, 255, 255))
 		y_vel = stat_font.render("PLAYER_Y_VEL: " + str(int(player.y_velocity)), True, (255, 255, 255))
 		score = score_font.render("SCORE: " + str(player.high), True, (255, 255, 255))
-		#print(score.get_height())
 
-		#screen.blit(x_vel, (800, 5))
-		#screen.blit(y_vel, (1010, 5))
 		player.draw_hearts(screen)
 		screen.blit(score, (10, 5))
 
@@ -154,35 +168,46 @@ def game_loop():
 	pygame.quit()
 	sys.exit(0)
 
-def pause():
+def pause(): # Pause Menu
+	menu_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 100), ((width * 0.4 - 150, 50))), 
+		(255, 255, 255), 
+		(168, 226, 255), 
+		"Main Menu",
+		(0, 0, 0),
+		message_font
+	)
+
+	resume_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 200), (width * 0.4 - 150, 50)),
+		(255, 255, 255),
+		(168, 226, 255),
+		"Resume",
+		(0, 0, 0),
+		message_font
+	)
+
 	running = True
 	while running:
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				running = False
-			elif event.type == KEYDOWN:
-				if event.key == pygame.K_RETURN:
-					return
 			elif event.type == MOUSEBUTTONDOWN:
-				x, y = pygame.mouse.get_pos()
-				if width * 0.3 + 75 < x < width * 0.7 - 75 and height * 0.3 + 150 < y < height * 0.3 + 200:
+				if menu_button.check_pos():
 					main_menu()
+				elif resume_button.check_pos():
+					return
 
-		menu_button = pygame.Rect((width * 0.3 + 75, height * 0.3 + 150), ((width * 0.4 - 150, 50)))
-		x, y = pygame.mouse.get_pos()
-		if width * 0.3 + 75 < x < width * 0.7 - 75 and height * 0.3 + 150 < y < height * 0.3 + 200:
-			button_color = (168, 226, 255)
-		else:
-			button_color = (255, 255, 255)
+		menu_button.change_color()
+		resume_button.change_color()
 
 		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
-		pygame.draw.rect(screen, button_color, menu_button)
+		menu_button.draw(screen)
+		resume_button.draw(screen)
 
-		message = message_font.render("Press Enter/Return to resume...", True, (255, 255, 255))
-		prompt = message_font.render("Main Menu", True, (0, 0, 0))
+		message = message_font.render("Paused...", True, (255, 255, 255))
 
 		screen.blit(message, (width / 2 - message.get_width() / 2,  height * 0.3 + 25))
-		screen.blit(prompt, (width / 2 - prompt.get_width() / 2, height * 0.3 + 150 + ((50 - prompt.get_height()) / 2)))
+		menu_button.draw_text(screen)
+		resume_button.draw_text(screen)
 
 		pygame.display.flip()
 		fpsClock.tick(fps)

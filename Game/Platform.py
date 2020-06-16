@@ -1,7 +1,7 @@
 import random
 import pygame
 
-class Platform(): #Platform + former = platformer
+class Platform: #Platform + former = platformer
 	platforms = []
 	platform_img = pygame.image.load("./assets/images/platform_2.png")
 	ground_img = pygame.image.load("./assets/images/ground.png")
@@ -15,19 +15,19 @@ class Platform(): #Platform + former = platformer
 		self.moving = bool(random.randint(0, 1))
 		self.x_vel = random.randint(2,6)
 
-	def draw(self, screen, offset):
+	def draw(self, screen, offset): # Offset is the players offset (this is called in the draw_and_scroll function)
 		self.update(screen)
 		screen.blit(self.img, (self.x, self.y + offset))
 
 	def update(self, screen):
 		if self.moving:
-			if self.x + self.rect.width > screen.get_width() or self.x < 0:
+			if self.x + self.rect.width > screen.get_width() or self.x < 0: # Reverse direction if hitting the edge
 				self.x_vel *= -1
 			self.x += self.x_vel
 			self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
 	@staticmethod
-	def add_plats(amount, screen):
+	def add_plats(amount, screen): # Adds 15 new platforms at random x positions
 		base_y = 700
 		max_x = screen.get_width() - Platform.platform_img.get_width()
 		for i in range(len(Platform.platforms), len(Platform.platforms) + amount):
@@ -37,7 +37,7 @@ class Platform(): #Platform + former = platformer
 
 
 	@staticmethod
-	def create_plates(amount, screen):
+	def create_plates(amount, screen): # Initial creation of platforms incuding ground platform
 		Platform.platforms.clear()
 		Platform(60, 700, Platform.ground_img)
 		max_x = screen.get_width() - Platform.platform_img.get_width()
