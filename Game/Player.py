@@ -1,16 +1,15 @@
 import pygame
 from .Coin import Coin
 from .Platform import Platform
-from .Highscores.read_write import read_data, dump_data
 
-class Player():
+class Player:
 	walk_speed = 10
 	start_x = 100
 	start_y = 500
 	jump_velocity = 27.5 # Increase this value to jump higher
 	heart_img = pygame.image.load("./assets/images/heart.png")
 	
-	def __init__(self, img, x, y, main_menu, enter_score):
+	def __init__(self, img, x, y):
 		self.img = img
 		self.x = x
 		self.y = y
@@ -18,35 +17,26 @@ class Player():
 		self.x_velocity = 0
 		self.score = 0
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
-		self.death_bar = 0
 		self.high = 0
 		self.hearts = 5
-		self.main_menu = main_menu
-		self.enter_score = enter_score
 
 	def draw(self, screen):
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
-		if self.x_velocity < 0:
+		if self.x_velocity < 0: # Draw a reversed image if facing to the left
 			screen.blit(pygame.transform.flip(self.img, True, False), (self.x, self.y))
 		else:
 			screen.blit(self.img, (self.x, self.y))
 
-	def reset(self):
-		self.x = self.start_x
-		self.y = self.start_y
-		self.x_velocity = 0
-		self.score = 0
-		self.y_velocity = 0
-		self.high = 0
-		self.hearts = 5
-
 	def update_physics(self, screen):
 		self.y_velocity += 1.2
-		self.score = (700 - self.y) // 275
+
+		self.score = (700 - self.y) // 275 # Calculate current score based on y_pos
 		if self.score > self.high:
 			self.high = self.score
-		self.death_bar = (self.high - 1) * 250 if self.score < 5 else (self.high - 5) * 250
-		for platform in Platform.platforms:
+
+		self.hearts = 5 - int(self.high - self.score)
+
+		for platform in Platform.platforms: # Checks collisions in all direction and changes velocity accordingly
 			if self.rect.colliderect(platform.rect):
 				if self.y_velocity > 0 and platform.y + platform.rect.height * 0.2 > self.y + self.rect.height * 0.8:
 					self.y = platform.y - self.rect.height + 1.2
@@ -58,30 +48,19 @@ class Player():
 				elif self.x_velocity < 0 and platform.rect.x < self.x:
 					self.x_velocity = 0
 
-		if self.score == len(Platform.platforms) - 2:
+		if self.score == len(Platform.platforms) - 2: # Add more platforms when close to top of current platforms
 			Platform.add_plats(15, screen)
 
-		if self.score < self.high - 4: # increasing this number will increase the delay on falling off the map
-			highscores = read_data('highscore.json')
-			if highscores['high'] < self.high:
-				highscores['high'] = self.high
-				dump_data('highscore.json', highscores)
-				self.enter_score()
-
-			
-			self.main_menu() 
-
-		if self.x_velocity > 0:
+		if self.x_velocity > 0: # Check within screen bounds
 			if self.x + self.rect.width < screen.get_width():
 				self.x += self.x_velocity
 		elif self.x_velocity < 0:
 			if self.x > 0:
 				self.x += self.x_velocity
 		
-		self.hearts = 5 - int(self.high - self.score)
 		self.y += self.y_velocity
 		
-	def jump(self):
+	def jump(self): # Jump if touching grounds
 		if self.y_velocity == 0:
 			self.y_velocity = -self.jump_velocity
 			self.y += self.y_velocity

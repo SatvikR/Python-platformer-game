@@ -3,8 +3,12 @@ from .Coin import Coin
 from .Player import Player
 from .Platform import Platform
 
-class Camera():
+class Camera:
 	def draw_and_scroll(self, player, screen):
+		"""
+		Calcultes difference between current and initial positon
+		and draws everything accordingly
+		"""
 		offset = player.start_y - player.y
 		player.rect = player.img.get_rect(topleft=(player.x, player.y))
 		if player.x_velocity < 0:
