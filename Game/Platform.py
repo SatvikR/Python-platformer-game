@@ -1,10 +1,12 @@
 import random
 import pygame
+from .Coin import Coin
 
 class Platform: #Platform + former = platformer
 	platforms = []
 	platform_img = pygame.image.load("./assets/images/platform_2.png")
 	ground_img = pygame.image.load("./assets/images/ground.png")
+
 
 	def __init__(self, x, y, img):
 		self.x = x
@@ -33,8 +35,16 @@ class Platform: #Platform + former = platformer
 		for i in range(len(Platform.platforms), len(Platform.platforms) + amount):
 			print(i, len(Platform.platforms) + 0 + amount)
 			random.seed()
-			Platform(random.randint(0, max_x), (base_y) - i * 275, Platform.platform_img)
+			platform_x = random.randint(0, max_x)
+			Platform(platform_x, (base_y) - i * 275, Platform.platform_img)
 
+			if random.randint(1, 10) <= 2: # 20 percent chance of Coin spawn
+				Coin(
+					Coin.coin_img, 
+					platform_x + Platform.platform_img.get_width() / 2,
+					((base_y) - i * 275) - Coin.coin_img.get_height() - 15,
+					Platform.platforms[-1]
+				)
 
 	@staticmethod
 	def create_plates(amount, screen): # Initial creation of platforms incuding ground platform
@@ -44,4 +54,12 @@ class Platform: #Platform + former = platformer
 		base_y = 700
 		for i in range(1, amount + 1):
 			random.seed()
-			Platform(random.randint(0, max_x), (base_y) - i * 275, Platform.platform_img)
+			platform_x = random.randint(0, max_x)
+			Platform(platform_x, (base_y) - i * 275, Platform.platform_img)
+			if random.randint(1, 10) <= 2 and (base_y) - i * 275 < 150: # 20 percent chance of Coin spawn
+				Coin(
+					Coin.coin_img, 
+					platform_x + Platform.platform_img.get_width() / 2 - Coin.coin_img.get_width() / 2,
+					((base_y) - i * 275) - Coin.coin_img.get_height() - 15,
+					Platform.platforms[-1]
+				)

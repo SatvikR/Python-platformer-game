@@ -1,6 +1,7 @@
 import pygame
 from .Coin import Coin
 from .Platform import Platform
+from .Highscores.read_write import read_data, dump_data
 
 class Player:
 	walk_speed = 10
@@ -19,6 +20,7 @@ class Player:
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		self.high = 0
 		self.hearts = 5
+		self.coins = read_data('data.json')['coins']
 
 	def draw(self, screen):
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
@@ -47,6 +49,15 @@ class Player:
 					self.x_velocity = 0
 				elif self.x_velocity < 0 and platform.rect.x < self.x:
 					self.x_velocity = 0
+
+		for coin in Coin.coins:
+			if self.rect.colliderect(coin.rect):
+				self.coins += 1
+				Coin.coins.remove(coin)
+
+		data = read_data('data.json')
+		data['coins'] = self.coins
+		dump_data('data.json', data)
 
 		if self.score == len(Platform.platforms) - 2: # Add more platforms when close to top of current platforms
 			Platform.add_plats(15, screen)
