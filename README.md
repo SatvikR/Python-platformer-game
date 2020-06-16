@@ -1,6 +1,6 @@
 # Python-platformer-game
 [![Python 3.5](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
-[![Python 3.5](https://img.shields.io/badge/pygame-1.9.6-orange.svg)]()
+[![Python 3.5](https://img.shields.io/badge/pygame-1.9.6-orange.svg)](https://pygame.org)
 <br>
 A platformer made with pygame
 <br>
