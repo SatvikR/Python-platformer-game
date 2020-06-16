@@ -3,11 +3,7 @@ from pygame.locals import *
 import sys
 import random
 import json
-from Game.Highscores.read_write import dump_data, read_data
-from Game.Coin import Coin
-from Game.Platform import Platform
-from Game.Camera import Camera
-from Game.Player import Player
+from Game import Coin, Player, Platform, Camera, dump_data, read_data
 
 pygame.init()
 fps = 60
