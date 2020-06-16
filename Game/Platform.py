@@ -42,7 +42,8 @@ class Platform: #Platform + former = platformer
 				Coin(
 					Coin.coin_img, 
 					platform_x + Platform.platform_img.get_width() / 2,
-					((base_y) - i * 275) - Coin.coin_img.get_height() - 15
+					((base_y) - i * 275) - Coin.coin_img.get_height() - 15,
+					Platform.platforms[-1]
 				)
 
 	@staticmethod
@@ -55,9 +56,10 @@ class Platform: #Platform + former = platformer
 			random.seed()
 			platform_x = random.randint(0, max_x)
 			Platform(platform_x, (base_y) - i * 275, Platform.platform_img)
-			if random.randint(1, 10) <= 2: # 20 percent chance of Coin spawn
+			if random.randint(1, 10) <= 2 and (base_y) - i * 275 < 150: # 20 percent chance of Coin spawn
 				Coin(
 					Coin.coin_img, 
-					platform_x + Platform.platform_img.get_width() / 2,
-					((base_y) - i * 275) - Coin.coin_img.get_height() - 15
+					platform_x + Platform.platform_img.get_width() / 2 - Coin.coin_img.get_width() / 2,
+					((base_y) - i * 275) - Coin.coin_img.get_height() - 15,
+					Platform.platforms[-1]
 				)

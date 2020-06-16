@@ -5,14 +5,19 @@ class Coin:
 	coin_img = pygame.image.load('./assets/images/coin.png')
 
 
-	def __init__(self, img, x, y):
+	def __init__(self, img, x, y, platform):
 		self.img = img
 		self.x = x
 		self.y = y
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		self.coins.append(self)
+		self.cor_platform = platform
 		
 	def draw(self, screen):
+		if self.cor_platform.moving:
+			self.x += self.cor_platform.x_vel
+			self.rect = self.img.get_rect(topleft=(self.x, self.y))
+
 		screen.blit(self.img, (self.x, self.y))
 
 	@staticmethod
