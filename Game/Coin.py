@@ -2,12 +2,13 @@ import pygame
 
 class Coin:
 	coins = []
+	coin_img = pygame.image.load('./assets/images/coin.png')
+
 
 	def __init__(self, img, x, y):
 		self.img = img
 		self.x = x
 		self.y = y
-		self.y_velocity = -10
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		self.coins.append(self)
 		
@@ -15,6 +16,6 @@ class Coin:
 		screen.blit(self.img, (self.x, self.y))
 
 	@staticmethod
-	def draw_all(coin_list, screen):
-		for coin in coin_list:
+	def draw_all(screen):
+		for coin in Coin.coins:
 			coin.draw(screen)

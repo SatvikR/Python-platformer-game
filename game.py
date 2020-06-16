@@ -45,13 +45,15 @@ def main_menu(): #  Starting Menu
 
 		screen.fill((47, 47, 47))
 
-		highscore = read_data('highscore.json')['high']
-		high_player = read_data('highscore.json')['name']
+		highscore = read_data('data.json')['high']
+		high_player = read_data('data.json')['name']
+		coin_count = read_data('data.json')['coins']
 
 		title = title_font.render("Spicy Meatballs!", True, (255, 255, 255))
 		startinstructions = title_font.render("Press SPACE to play!", True, (255, 255, 255))
 		highscore_title = highscore_font.render("Highscore: ", True, (255, 255, 255))
-		highscore = highscore_font.render(str(int(highscore)), True, (255, 255, 255))
+		coins = highscore_font.render(f"Coins: {coin_count}", True, (255, 255, 255))
+		highscore = highscore_font.render(f"{int(highscore)}", True, (255, 255, 255))
 		name = highscore_font.render(high_player, True, (255, 255, 255))
 
 		screen.blit(title, (width / 2 - title.get_width() / 2, 100))
@@ -66,6 +68,7 @@ def main_menu(): #  Starting Menu
 		screen.blit(highscore, (100, 300))
 		screen.blit(highscore_title,  (100, 225))
 		screen.blit(name, (300, 300))
+		screen.blit(coins, (100, 425))
 
 		pygame.display.flip()
 		fpsClock.tick(fps)
@@ -84,9 +87,9 @@ def enter_score(): # Prompt that appears when a player gets a highscore
 				if event.key == pygame.K_BACKSPACE:
 					text = text[:-1]
 				elif event.key == pygame.K_RETURN:
-					data = read_data('highscore.json')
+					data = read_data('data.json')
 					data['name'] = text.upper()
-					dump_data('highscore.json', data)
+					dump_data('data.json', data)
 					main_menu()
 				else:
 					if len(text) < 3:
@@ -143,25 +146,31 @@ def game_loop(): # Main game loop
 		player.update_physics(screen)
 
 		if player.hearts <= 0:
-			highscores = read_data('highscore.json')
+			highscores = read_data('data.json')
 			if highscores['high'] < player.high:
 				highscores['high'] = player.high
-				dump_data('highscore.json', highscores)
+				dump_data('data.json', highscores)
 				enter_score()
 
 			main_menu()
 
+		coins = read_data('data.json')['coins']
+
 		# DRAW
 		screen.fill((47, 47, 47))
 
+		Coin.draw_all(screen)
+
 		camera.draw_and_scroll(player, screen)
 
-		x_vel = stat_font.render("PLAYER_X_VEL: " + str(player.x_velocity), True, (255, 255, 255))
-		y_vel = stat_font.render("PLAYER_Y_VEL: " + str(int(player.y_velocity)), True, (255, 255, 255))
-		score = score_font.render("SCORE: " + str(player.high), True, (255, 255, 255))
+		# x_vel = stat_font.render("PLAYER_X_VEL: " + str(player.x_velocity), True, (255, 255, 255))
+		# y_vel = stat_font.render("PLAYER_Y_VEL: " + str(int(player.y_velocity)), True, (255, 255, 255))
+		score = score_font.render(f"SCORE: {str(player.high)}", True, (255, 255, 255))
+		coins = score_font.render(f"COINS: {coins}", True, (255,255, 255))
 
 		player.draw_hearts(screen)
 		screen.blit(score, (10, 5))
+		screen.blit(coins, (width - coins.get_width() - 155, 5))
 
 		pygame.display.flip()
 		fpsClock.tick(fps)
