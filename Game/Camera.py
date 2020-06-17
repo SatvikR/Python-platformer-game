@@ -1,6 +1,5 @@
 import pygame
 from .Coin import Coin
-from .Player import Player
 from .Platform import Platform
 
 class Camera:

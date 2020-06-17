@@ -1,8 +1,6 @@
 import pygame
 from pygame.locals import *
 import sys
-import random
-import json
 from Game import (
 	Coin,
 	Player, 
@@ -159,7 +157,6 @@ def game_loop(): # Main game loop
 			player.jump()
 		# UPDATE
 		player.update_physics(screen)
-		print(player.y_velocity)
 
 		if player.hearts <= 0:
 			highscores = read_data('data.json')

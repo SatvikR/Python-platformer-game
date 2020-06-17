@@ -33,7 +33,7 @@ class Platform: #Platform + former = platformer
 		base_y = 700
 		max_x = screen.get_width() - Platform.platform_img.get_width()
 		for i in range(len(Platform.platforms), len(Platform.platforms) + amount):
-			print(i, len(Platform.platforms) + 0 + amount)
+			print(f"Generated platform #{i}")
 			random.seed()
 			platform_x = random.randint(0, max_x)
 			Platform(platform_x, (base_y) - i * 275, Platform.platform_img)
