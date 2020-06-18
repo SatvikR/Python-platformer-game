@@ -7,6 +7,7 @@ from Game import (
 	Platform, 
 	Camera, 
 	Button,
+	Upgrades,
 	dump_data, 
 	read_data
 )
@@ -131,6 +132,8 @@ def enter_score(): # Prompt that appears when a player gets a highscore
 
 def game_loop(): # Main game loop
 	player = Player(player_img, Player.start_x, Player.start_y)
+
+	Upgrades.update_upgrades('data.json')
 
 	Platform.create_plates(15, screen)
 
