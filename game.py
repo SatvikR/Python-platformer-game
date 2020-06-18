@@ -276,6 +276,7 @@ def shop():
 						data['jump_vel'] += 10
 						data["jump_upgrade"]["active"] = True
 						dump_data('data.json', data)
+						upgrade_prompt("jump_upgrade")
 					else:
 						pass
 
@@ -295,6 +296,50 @@ def shop():
 		fpsClock.tick(fps)
 	pygame.quit()
 	sys.exit(0)
+
+def upgrade_prompt(upgrade_name):
+	back_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 225), (width * 0.4 - 150, 50)),
+		(255, 255, 255),
+		(168, 226, 255),
+		"Back",
+		(0, 0, 0),
+		message_font
+	)
+	
+	upgrade_duration = read_data('data.json')[upgrade_name]["duration"]
+
+	running = True
+	while running:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				running = False
+			elif event.type == MOUSEBUTTONDOWN:
+				if back_button.check_pos():
+					return
+
+		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
+
+
+		prompt_one = score_font.render("You Purchased: ", True, (255, 255, 255))
+		prompt_two = score_font.render(upgrade_name, True, (255, 255, 255))
+		prompt_three = score_font.render("Your upgrade lasts for ", True, (255, 255, 255))
+		prompt_four = score_font.render(f"{upgrade_duration} Games", True, (255, 255, 255))
+
+		screen.blit(prompt_one, (width / 2 - prompt_one.get_width() / 2, height * 0.3 + 5))
+		screen.blit(prompt_two, (width / 2 - prompt_two.get_width() / 2, height * 0.3 + 45))
+		screen.blit(prompt_three, (width / 2 - prompt_three.get_width() / 2, height * 0.3 + 85))
+		screen.blit(prompt_four, (width / 2 - prompt_four.get_width() / 2, height * 0.3 + 125))
+
+		back_button.change_color()
+		back_button.draw(screen)
+		back_button.draw_text(screen)
+
+		pygame.display.flip()
+		fpsClock.tick(fps)
+
+	pygame.quit()
+	sys.exit(0)
+
 
 if __name__ == "__main__":
 	main_menu()
