@@ -271,14 +271,17 @@ def shop():
 					main_menu()
 				elif jump_button.check_pos():
 					data = read_data('data.json')
-					if data["coins"] >= data["jump_upgrade"]["price"]:
-						data['coins'] -= data["jump_upgrade"]["price"]
-						data['jump_vel'] += 10
-						data["jump_upgrade"]["active"] = True
-						dump_data('data.json', data)
-						upgrade_prompt("jump_upgrade")
+					if not data["jump_upgrade"]["active"]:
+						if data["coins"] >= data["jump_upgrade"]["price"]:
+							data['coins'] -= data["jump_upgrade"]["price"]
+							data['jump_vel'] += 10
+							data["jump_upgrade"]["active"] = True
+							dump_data('data.json', data)
+							upgrade_prompt("jump_upgrade")
+						else:
+							insuffecient_money()
 					else:
-						pass
+						upgrade_in_use()
 
 		screen.fill((47, 47, 47))
 
@@ -340,6 +343,73 @@ def upgrade_prompt(upgrade_name):
 	pygame.quit()
 	sys.exit(0)
 
+def upgrade_in_use():
+	back_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 225), (width * 0.4 - 150, 50)),
+		(255, 255, 255),
+		(168, 226, 255),
+		"Back",
+		(0, 0, 0),
+		message_font
+	)
+
+	running = True
+	while running:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				running = False
+			elif event.type == MOUSEBUTTONDOWN:
+				if back_button.check_pos():
+					return
+
+		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
+
+		prompt = score_font.render("Upgrade in use!", True, (255, 255, 255))
+
+		screen.blit(prompt, (width / 2 - prompt.get_width() / 2, height / 2 - prompt.get_height() / 2 - 75))
+
+		back_button.change_color()
+		back_button.draw(screen)
+		back_button.draw_text(screen)
+
+		pygame.display.flip()
+		fpsClock.tick(fps)
+
+	pygame.quit()
+	sys.exit(0)
+
+def insuffecient_money():
+	back_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 225), (width * 0.4 - 150, 50)),
+		(255, 255, 255),
+		(168, 226, 255),
+		"Back",
+		(0, 0, 0),
+		message_font
+	)
+
+	running = True
+	while running:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				running = False
+			elif event.type == MOUSEBUTTONDOWN:
+				if back_button.check_pos():
+					return
+
+		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
+
+		prompt = score_font.render("Not Enough Money!", True, (255, 255, 255))
+
+		screen.blit(prompt, (width / 2 - prompt.get_width() / 2, height / 2 - prompt.get_height() / 2 - 75))
+
+		back_button.change_color()
+		back_button.draw(screen)
+		back_button.draw_text(screen)
+
+		pygame.display.flip()
+		fpsClock.tick(fps)
+
+	pygame.quit()
+	sys.exit(0)
 
 if __name__ == "__main__":
 	main_menu()

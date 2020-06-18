@@ -1,7 +1,7 @@
 {
-    "high": 72.0,
-    "name": "SR",
-    "coins": 213,
+    "high": 0.0,
+    "name": "",
+    "coins": 0,
     "jump_vel": 27.5,
     "upgrades": [
         "jump_upgrade"
@@ -9,7 +9,7 @@
     "jump_upgrade": {
         "price": 200,
         "duration": 5,
-        "time": 1,
+        "time": 0,
         "active": false,
         "revert_val": 27.5,
         "revert_variable": "jump_vel"
