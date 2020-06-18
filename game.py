@@ -1,5 +1,4 @@
 import pygame
-from pygame.locals import *
 import sys
 from Game import (
 	Coin,
@@ -45,12 +44,12 @@ def main_menu(): #  Starting Menu
 	running = True
 	while running:
 		for event in pygame.event.get():
-			if event.type == QUIT:
+			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == KEYDOWN:
+			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_SPACE:
 					game_loop()
-			elif event.type == MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if shop_button.check_pos():
 					shop()
 
@@ -96,9 +95,9 @@ def enter_score(): # Prompt that appears when a player gets a highscore
 	text = ''
 	while running:
 		for event in pygame.event.get():
-			if event.type == QUIT:
+			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == KEYDOWN:
+			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_BACKSPACE:
 					text = text[:-1]
 				elif event.key == pygame.K_RETURN:
@@ -141,9 +140,9 @@ def game_loop(): # Main game loop
 	running = True
 	while running:
 		for event in pygame.event.get():
-			if event.type == QUIT:	
+			if event.type == pygame.QUIT:	
 				running = False				
-			elif event.type == KEYDOWN:
+			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
 					pause()
 			
@@ -212,9 +211,9 @@ def pause(): # Pause Menu
 	running = True
 	while running:
 		for event in pygame.event.get():
-			if event.type == QUIT:
+			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if menu_button.check_pos():
 					main_menu()
 				elif resume_button.check_pos():
@@ -264,9 +263,9 @@ def shop():
 	running = True
 	while running:
 		for event in pygame.event.get():
-			if event.type == QUIT:
+			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if menu_button.check_pos():
 					main_menu()
 				elif jump_button.check_pos():
@@ -314,9 +313,9 @@ def upgrade_prompt(upgrade_name):
 	running = True
 	while running:
 		for event in pygame.event.get():
-			if event.type == QUIT:
+			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if back_button.check_pos():
 					return
 
@@ -355,9 +354,9 @@ def upgrade_in_use():
 	running = True
 	while running:
 		for event in pygame.event.get():
-			if event.type == QUIT:
+			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if back_button.check_pos():
 					return
 
@@ -389,9 +388,9 @@ def insuffecient_money():
 	running = True
 	while running:
 		for event in pygame.event.get():
-			if event.type == QUIT:
+			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN:
 				if back_button.check_pos():
 					return
 
