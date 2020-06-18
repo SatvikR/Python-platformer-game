@@ -7,7 +7,7 @@ class Player:
 	walk_speed = 10
 	start_x = 100
 	start_y = 500
-	jump_velocity = 27.5 # Increase this value to jump higher
+	jump_velocity = read_data('data.json')['jump_vel'] # Increase this value to jump higher
 	heart_img = pygame.image.load("./assets/images/heart.png")
 	
 	def __init__(self, img, x, y):
@@ -21,6 +21,7 @@ class Player:
 		self.high = 0
 		self.hearts = 5
 		self.coins = read_data('data.json')['coins']
+		Player.jump_velocity = read_data('data.json')['jump_vel']
 
 	def draw(self, screen):
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))

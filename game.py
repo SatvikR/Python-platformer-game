@@ -7,6 +7,7 @@ from Game import (
 	Platform, 
 	Camera, 
 	Button,
+	Upgrades,
 	dump_data, 
 	read_data
 )
@@ -23,6 +24,7 @@ player_img = pygame.image.load("./assets/images/player.png")
 platform_one = pygame.image.load("./assets/images/platform_1.png")
 platform_three = pygame.image.load("./assets/images/platform_3.png")
 coin_img = pygame.image.load("./assets/images/coin.png")
+jump_upgrade_img = pygame.image.load("./assets/images/jump_upgrade.png")
 stat_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 24)
 score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
 title_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 70)
@@ -111,7 +113,7 @@ def enter_score(): # Prompt that appears when a player gets a highscore
 
 		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
 		pygame.draw.rect(screen, (255, 255, 255), pygame.Rect((width * 0.3 + 15, height * 0.3 + 80), (width * 0.4 - 30, height * 0.4 - 170)))
-		pygame.draw.rect(screen, (47, 47, 47), pygame.Rect((width - 200, 0), (200, 35)))
+		pygame.draw.rect(screen, (47, 47, 47), pygame.Rect((width - 170, 0), (200, 35)))
 
 		message = message_font.render("Congrats, you got a highscore!", True, (255, 255, 255))
 		prompt = message_font.render("Enter Your Initials:", True, (255, 255, 255))
@@ -130,6 +132,8 @@ def enter_score(): # Prompt that appears when a player gets a highscore
 
 def game_loop(): # Main game loop
 	player = Player(player_img, Player.start_x, Player.start_y)
+
+	Upgrades.update_upgrades('data.json')
 
 	Platform.create_plates(15, screen)
 
@@ -176,14 +180,12 @@ def game_loop(): # Main game loop
 
 		camera.draw_and_scroll(player, screen)
 
-		# x_vel = stat_font.render("PLAYER_X_VEL: " + str(player.x_velocity), True, (255, 255, 255))
-		# y_vel = stat_font.render("PLAYER_Y_VEL: " + str(int(player.y_velocity)), True, (255, 255, 255))
 		score = score_font.render(f"SCORE: {str(player.high)}", True, (255, 255, 255))
 		coins = score_font.render(f"COINS: {coins}", True, (255,255, 255))
 
 		player.draw_hearts(screen)
 		screen.blit(score, (10, 5))
-		screen.blit(coins, (width - coins.get_width() - 155, 5))
+		screen.blit(coins, (width - coins.get_width() - 200, 5))
 
 		pygame.display.flip()
 		fpsClock.tick(fps)
@@ -238,11 +240,23 @@ def pause(): # Pause Menu
 	sys.exit(0)
 
 def shop():
+
+	# Shop Button Width Margins: 100px on either side, 200 px between buttons, button_width=200px
+
 	menu_button = Button(
-		pygame.Rect((width / 2 - 100, 600), (200, 50)),
+		pygame.Rect((width / 2 - 100, 700), (200, 50)),
 		(255, 255, 255),
 		(168, 226, 255),
 		"Main Menu",
+		(0, 0, 0),
+		message_font
+	)
+
+	jump_button = Button(
+		pygame.Rect((100, 300), (200, 50)),
+		(255, 255, 255),
+		(168, 226, 255),
+		"Upgrade Jump",
 		(0, 0, 0),
 		message_font
 	)
@@ -255,18 +269,145 @@ def shop():
 			elif event.type == MOUSEBUTTONDOWN:
 				if menu_button.check_pos():
 					main_menu()
+				elif jump_button.check_pos():
+					data = read_data('data.json')
+					if not data["jump_upgrade"]["active"]:
+						if data["coins"] >= data["jump_upgrade"]["price"]:
+							data['coins'] -= data["jump_upgrade"]["price"]
+							data['jump_vel'] += 10
+							data["jump_upgrade"]["active"] = True
+							dump_data('data.json', data)
+							upgrade_prompt("jump_upgrade")
+						else:
+							insuffecient_money()
+					else:
+						upgrade_in_use()
 
 		screen.fill((47, 47, 47))
 
 		menu_button.change_color()
-		message = title_font.render("Coming Soon...", True, (255, 255, 255))
+		jump_button.change_color()
 
-		screen.blit(message, (width / 2 - message.get_width() / 2, height / 2 - message.get_height() / 2))
 		menu_button.draw(screen)
 		menu_button.draw_text(screen)
+		jump_button.draw(screen)
+		jump_button.draw_text(screen)
+
+		screen.blit(jump_upgrade_img, (jump_button.rect.x - 25, jump_button.rect.y - 15 - jump_upgrade_img.get_height()))
 
 		pygame.display.flip()
 		fpsClock.tick(fps)
+	pygame.quit()
+	sys.exit(0)
+
+def upgrade_prompt(upgrade_name):
+	back_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 225), (width * 0.4 - 150, 50)),
+		(255, 255, 255),
+		(168, 226, 255),
+		"Back",
+		(0, 0, 0),
+		message_font
+	)
+	
+	upgrade_duration = read_data('data.json')[upgrade_name]["duration"]
+
+	running = True
+	while running:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				running = False
+			elif event.type == MOUSEBUTTONDOWN:
+				if back_button.check_pos():
+					return
+
+		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
+
+
+		prompt_one = score_font.render("You Purchased: ", True, (255, 255, 255))
+		prompt_two = score_font.render(upgrade_name, True, (255, 255, 255))
+		prompt_three = score_font.render("Your upgrade lasts for ", True, (255, 255, 255))
+		prompt_four = score_font.render(f"{upgrade_duration} Games", True, (255, 255, 255))
+
+		screen.blit(prompt_one, (width / 2 - prompt_one.get_width() / 2, height * 0.3 + 5))
+		screen.blit(prompt_two, (width / 2 - prompt_two.get_width() / 2, height * 0.3 + 45))
+		screen.blit(prompt_three, (width / 2 - prompt_three.get_width() / 2, height * 0.3 + 85))
+		screen.blit(prompt_four, (width / 2 - prompt_four.get_width() / 2, height * 0.3 + 125))
+
+		back_button.change_color()
+		back_button.draw(screen)
+		back_button.draw_text(screen)
+
+		pygame.display.flip()
+		fpsClock.tick(fps)
+
+	pygame.quit()
+	sys.exit(0)
+
+def upgrade_in_use():
+	back_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 225), (width * 0.4 - 150, 50)),
+		(255, 255, 255),
+		(168, 226, 255),
+		"Back",
+		(0, 0, 0),
+		message_font
+	)
+
+	running = True
+	while running:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				running = False
+			elif event.type == MOUSEBUTTONDOWN:
+				if back_button.check_pos():
+					return
+
+		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
+
+		prompt = score_font.render("Upgrade in use!", True, (255, 255, 255))
+
+		screen.blit(prompt, (width / 2 - prompt.get_width() / 2, height / 2 - prompt.get_height() / 2 - 75))
+
+		back_button.change_color()
+		back_button.draw(screen)
+		back_button.draw_text(screen)
+
+		pygame.display.flip()
+		fpsClock.tick(fps)
+
+	pygame.quit()
+	sys.exit(0)
+
+def insuffecient_money():
+	back_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 225), (width * 0.4 - 150, 50)),
+		(255, 255, 255),
+		(168, 226, 255),
+		"Back",
+		(0, 0, 0),
+		message_font
+	)
+
+	running = True
+	while running:
+		for event in pygame.event.get():
+			if event.type == QUIT:
+				running = False
+			elif event.type == MOUSEBUTTONDOWN:
+				if back_button.check_pos():
+					return
+
+		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
+
+		prompt = score_font.render("Not Enough Money!", True, (255, 255, 255))
+
+		screen.blit(prompt, (width / 2 - prompt.get_width() / 2, height / 2 - prompt.get_height() / 2 - 75))
+
+		back_button.change_color()
+		back_button.draw(screen)
+		back_button.draw_text(screen)
+
+		pygame.display.flip()
+		fpsClock.tick(fps)
+
 	pygame.quit()
 	sys.exit(0)
 
