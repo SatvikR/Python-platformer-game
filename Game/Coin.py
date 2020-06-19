@@ -11,10 +11,10 @@ class Coin:
 		self.y = y
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		self.coins.append(self)
-		self.cor_platform = platform
+		self.cor_platform = platform # Platform underneath
 		
 	def draw(self, screen):
-		if self.cor_platform.moving:
+		if self.cor_platform.moving: # Move if platform underneath is moving
 			self.x += self.cor_platform.x_vel
 			self.rect = self.img.get_rect(topleft=(self.x, self.y))
 

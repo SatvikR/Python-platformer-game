@@ -22,6 +22,7 @@ pygame.display.set_caption("The holy rectangle")
 player_img = pygame.image.load("./assets/images/player.png")
 coin_img = pygame.image.load("./assets/images/coin.png")
 jump_upgrade_img = pygame.image.load("./assets/images/jump_upgrade.png")
+coin_upgrade_img = pygame.image.load("./assets/images/coin_upgrade.png")
 score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
 title_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 70)
 highscore_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 50)
@@ -65,7 +66,7 @@ def main_menu(): #  Starting Menu
 
 		screen.blit(title, (width / 2 - title.get_width() / 2, 100))
 		screen.blit(startinstructions, (width / 2 - startinstructions.get_width() / 2, height - 75))
-		screen.blit(pygame.transform.scale(
+		screen.blit(pygame.transform.scale( # Player Model
 			player_img, 
 			(player_img.get_width() * 3, player_img.get_height() * 3)), 
 			(width / 1.5 + 100, 300))
@@ -96,7 +97,7 @@ def enter_score(): # Prompt that appears when a player gets a highscore
 				running = False
 			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_BACKSPACE:
-					text = text[:-1]
+					text = text[:-1] # Slices off last letter
 				elif event.key == pygame.K_RETURN:
 					data = read_data('data.json')
 					data['name'] = text.upper()
@@ -235,7 +236,7 @@ def pause(): # Pause Menu
 	pygame.quit()
 	sys.exit(0)
 
-def shop():
+def shop(): # Menu from which player can buy upgrades
 
 	# Shop Button Width Margins: 100px on either side, 200 px between buttons, button_width=200px
 
@@ -252,22 +253,32 @@ def shop():
 		pygame.Rect((100, 300), (200, 50)),
 		(255, 255, 255),
 		(168, 226, 255),
-		"Upgrade Jump",
+		"Higher Jump",
 		(0, 0, 0),
 		message_font
 	)
+
+	coin_button = Button(
+		pygame.Rect((500, 300), (200, 50)),
+		(255, 255, 255),
+		(168, 226, 255),
+		"Multi-Coin",
+		(0, 0, 0),
+		message_font
+	)
+
 
 	running = True
 	while running:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == pygame.MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN: # Check each upgrade button and do the according action
 				if menu_button.check_pos():
 					main_menu()
 				elif jump_button.check_pos():
 					data = read_data('data.json')
-					if not data["jump_upgrade"]["active"]:
+					if not data["jump_upgrade"]["active"]: # Add ten to jump_vel
 						if data["coins"] >= data["jump_upgrade"]["price"]:
 							data['coins'] -= data["jump_upgrade"]["price"]
 							data['jump_vel'] += 10
@@ -278,25 +289,47 @@ def shop():
 							empty_prompt("Not Enough Money!")
 					else:
 						empty_prompt("Upgrade in Use")
+				elif coin_button.check_pos():
+					data = read_data('data.json')
+					if not data["coin_upgrade"]["active"]: # Doubles coin multiplier
+						if data["coins"] >= data["coin_upgrade"]["price"]:
+							data["coins"] -= data["coin_upgrade"]["price"]
+							data["coin_multiplier"] = 2
+							data["coin_upgrade"]["active"] = True
+							dump_data('data.json', data)
+							upgrade_prompt("coin_upgrade")
+						else:
+							empty_prompt("Not Enough Money!")
+					else:
+						empty_prompt("Upgrade in Use")
 
 		screen.fill((47, 47, 47))
 
+		coins = score_font.render(f"COINS: {read_data('data.json')['coins']}", True, (255,255, 255))
+		screen.blit(coins, (width - 250, 15))
+
 		menu_button.change_color()
 		jump_button.change_color()
+		coin_button.change_color()
 
 		menu_button.draw(screen)
 		menu_button.draw_text(screen)
+
 		jump_button.draw(screen)
 		jump_button.draw_text(screen)
 
+		coin_button.draw(screen)
+		coin_button.draw_text(screen)
+
 		screen.blit(jump_upgrade_img, (jump_button.rect.x - 25, jump_button.rect.y - 15 - jump_upgrade_img.get_height()))
+		screen.blit(coin_upgrade_img, (coin_button.rect.x - 25, coin_button.rect.y - 15 - coin_upgrade_img.get_height()))
 
 		pygame.display.flip()
 		fpsClock.tick(fps)
 	pygame.quit()
 	sys.exit(0)
 
-def upgrade_prompt(upgrade_name):
+def upgrade_prompt(upgrade_name): # Prompt when upgrade is purchased
 	back_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 225), (width * 0.4 - 150, 50)),
 		(255, 255, 255),
 		(168, 226, 255),
@@ -339,7 +372,7 @@ def upgrade_prompt(upgrade_name):
 	pygame.quit()
 	sys.exit(0)
 
-def empty_prompt(text):
+def empty_prompt(text): # Generic prompt with text and back button
 	back_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 225), (width * 0.4 - 150, 50)),
 		(255, 255, 255),
 		(168, 226, 255),

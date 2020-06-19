@@ -21,7 +21,8 @@ class Player:
 		self.high = 0
 		self.hearts = 5
 		self.coins = read_data('data.json')['coins']
-		Player.jump_velocity = read_data('data.json')['jump_vel']
+		self.coin_multiplier = read_data('data.json')["coin_multiplier"] # Can be upgraded
+		Player.jump_velocity = read_data('data.json')['jump_vel'] # Reloaded because can be upgraded
 
 	def draw(self, screen):
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
@@ -67,7 +68,7 @@ class Player:
 
 		for coin in Coin.coins:
 			if self.rect.colliderect(coin.rect):
-				self.coins += 1
+				self.coins += 1 * self.coin_multiplier
 				Coin.coins.remove(coin)
 
 		data = read_data('data.json')
