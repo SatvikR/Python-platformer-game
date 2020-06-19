@@ -7,6 +7,7 @@ from Game import (
 	Camera, 
 	Button,
 	Upgrades,
+	Enemy,
 	dump_data, 
 	read_data
 )
@@ -172,8 +173,6 @@ def game_loop(): # Main game loop
 
 		# DRAW
 		screen.fill((47, 47, 47))
-
-		Coin.draw_all(screen)
 
 		camera.draw_and_scroll(player, screen)
 
