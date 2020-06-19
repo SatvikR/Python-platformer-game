@@ -20,11 +20,8 @@ icon = pygame.image.load("./assets/images/icon.png")
 pygame.display.set_icon(icon)
 pygame.display.set_caption("The holy rectangle")
 player_img = pygame.image.load("./assets/images/player.png")
-platform_one = pygame.image.load("./assets/images/platform_1.png")
-platform_three = pygame.image.load("./assets/images/platform_3.png")
 coin_img = pygame.image.load("./assets/images/coin.png")
 jump_upgrade_img = pygame.image.load("./assets/images/jump_upgrade.png")
-stat_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 24)
 score_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 40)
 title_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 70)
 highscore_font = pygame.font.Font("./assets/fonts/bitfont.ttf", 50)
@@ -278,9 +275,9 @@ def shop():
 							dump_data('data.json', data)
 							upgrade_prompt("jump_upgrade")
 						else:
-							insuffecient_money()
+							empty_prompt("Not Enough Money!")
 					else:
-						upgrade_in_use()
+						empty_prompt("Upgrade in Use")
 
 		screen.fill((47, 47, 47))
 
@@ -342,7 +339,7 @@ def upgrade_prompt(upgrade_name):
 	pygame.quit()
 	sys.exit(0)
 
-def upgrade_in_use():
+def empty_prompt(text):
 	back_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 225), (width * 0.4 - 150, 50)),
 		(255, 255, 255),
 		(168, 226, 255),
@@ -362,41 +359,7 @@ def upgrade_in_use():
 
 		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
 
-		prompt = score_font.render("Upgrade in use!", True, (255, 255, 255))
-
-		screen.blit(prompt, (width / 2 - prompt.get_width() / 2, height / 2 - prompt.get_height() / 2 - 75))
-
-		back_button.change_color()
-		back_button.draw(screen)
-		back_button.draw_text(screen)
-
-		pygame.display.flip()
-		fpsClock.tick(fps)
-
-	pygame.quit()
-	sys.exit(0)
-
-def insuffecient_money():
-	back_button = Button(pygame.Rect((width * 0.3 + 75, height * 0.3 + 225), (width * 0.4 - 150, 50)),
-		(255, 255, 255),
-		(168, 226, 255),
-		"Back",
-		(0, 0, 0),
-		message_font
-	)
-
-	running = True
-	while running:
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				running = False
-			elif event.type == pygame.MOUSEBUTTONDOWN:
-				if back_button.check_pos():
-					return
-
-		pygame.draw.rect(screen, (0, 0, 0), pygame.Rect((width * 0.3, height * 0.3), (width * 0.4, height * 0.4)))
-
-		prompt = score_font.render("Not Enough Money!", True, (255, 255, 255))
+		prompt = score_font.render(text, True, (255, 255, 255))
 
 		screen.blit(prompt, (width / 2 - prompt.get_width() / 2, height / 2 - prompt.get_height() / 2 - 75))
 
