@@ -1,12 +1,12 @@
 {
     "high": 151.0,
     "name": "SR",
-    "coins": 634,
+    "coins": 640,
     "jump_vel": 27.5,
     "coin_multiplier": 1,
     "current_pos": [
-        330,
-        -4087.8
+        280,
+        -4637.8
     ],
     "upgrades": [
         "jump_upgrade",
@@ -15,8 +15,8 @@
     "jump_upgrade": {
         "price": 200,
         "duration": 5,
-        "time": 2,
-        "active": true,
+        "time": 0,
+        "active": false,
         "revert_val": 27.5,
         "revert_variable": "jump_vel"
     },

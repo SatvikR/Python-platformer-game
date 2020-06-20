@@ -1,4 +1,4 @@
- #from .Enemy import Enemy
+from .Enemy import Enemy
 from .Coin import Coin
 from .Player import Player
 from .Platform import Platform
