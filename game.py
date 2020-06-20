@@ -130,6 +130,7 @@ def enter_score(): # Prompt that appears when a player gets a highscore
 
 def game_loop(): # Main game loop
 	player = Player(player_img, Player.start_x, Player.start_y)
+	Enemy.target_player = player
 
 	Upgrades.update_upgrades('data.json')
 

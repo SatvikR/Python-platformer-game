@@ -1,13 +1,9 @@
 {
     "high": 151.0,
     "name": "SR",
-    "coins": 640,
+    "coins": 648,
     "jump_vel": 27.5,
     "coin_multiplier": 1,
-    "current_pos": [
-        280,
-        -4637.8
-    ],
     "upgrades": [
         "jump_upgrade",
         "coin_upgrade"

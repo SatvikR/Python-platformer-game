@@ -12,10 +12,15 @@ class Camera:
 		"""
 		offset = player.start_y - player.y
 		player.rect = player.img.get_rect(topleft=(player.x, player.y))
-		if player.x_velocity < 0:
+		if player.direction == 'l':
 			screen.blit(pygame.transform.flip(player.img, True, False), (player.x, player.y + offset))
+			screen.blit(
+				pygame.transform.flip(player.gun_img, True, False), 
+				(player.x - player.gun_img.get_width(), player.y + player.img.get_height() / 2 + offset)
+			)
 		else:
 			screen.blit(player.img, (player.x, player.y + offset))
+			screen.blit(player.gun_img, (player.x + player.img.get_width(), player.y + player.img.get_height() / 2 + offset))
 
 		[plat.draw(screen, offset) for plat in Platform.platforms]
 		
