@@ -7,6 +7,7 @@ class Player:
 	walk_speed = 10
 	start_x = 100
 	start_y = 500
+	current_pos = 0, 0
 	jump_velocity = read_data('data.json')['jump_vel'] # Increase this value to jump higher
 	heart_img = pygame.image.load("./assets/images/heart.png")
 	
@@ -14,6 +15,7 @@ class Player:
 		self.img = img
 		self.x = x
 		self.y = y
+		Player.current_pos = self.x, self.y
 		self.y_velocity = 0
 		self.x_velocity = 0
 		self.score = 0
@@ -63,9 +65,6 @@ class Player:
 
 		self.hearts = 5 - int(self.high - self.score)
 
-
-
-
 		for coin in Coin.coins:
 			if self.rect.colliderect(coin.rect):
 				self.coins += 1 * self.coin_multiplier
@@ -73,10 +72,12 @@ class Player:
 
 		data = read_data('data.json')
 		data['coins'] = self.coins
+		data["current_pos"] = [self.x, self.y]
 		dump_data('data.json', data)
 
 		if self.score == len(Platform.platforms) - 2: # Add more platforms when close to top of current platforms
 			Platform.add_plats(15, screen)
+		
 		
 
 		
