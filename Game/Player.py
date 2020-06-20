@@ -2,11 +2,13 @@ import pygame
 from .Coin import Coin
 from .Platform import Platform
 from .Highscores.read_write import read_data, dump_data
+from .Meatball import Meatball
 
 class Player:
 	walk_speed = 10
 	start_x = 100
 	start_y = 500
+	current_pos = 0, 0
 	jump_velocity = read_data('data.json')['jump_vel'] # Increase this value to jump higher
 	heart_img = pygame.image.load("./assets/images/heart.png")
 	
@@ -14,12 +16,14 @@ class Player:
 		self.img = img
 		self.x = x
 		self.y = y
+		Player.current_pos = self.x, self.y
 		self.y_velocity = 0
 		self.x_velocity = 0
 		self.score = 0
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		self.high = 0
 		self.hearts = 5
+		self.damage = 0
 		self.coins = read_data('data.json')['coins']
 		self.coin_multiplier = read_data('data.json')["coin_multiplier"] # Can be upgraded
 		Player.jump_velocity = read_data('data.json')['jump_vel'] # Reloaded because can be upgraded
@@ -61,10 +65,8 @@ class Player:
 		if self.score > self.high:
 			self.high = self.score
 
-		self.hearts = 5 - int(self.high - self.score)
-
-
-
+		self.check_bullet_collisions(Meatball.meatballs)
+		self.hearts = 5 - int(self.high - self.score) - self.damage
 
 		for coin in Coin.coins:
 			if self.rect.colliderect(coin.rect):
@@ -73,10 +75,12 @@ class Player:
 
 		data = read_data('data.json')
 		data['coins'] = self.coins
+		data["current_pos"] = [self.x, self.y]
 		dump_data('data.json', data)
 
 		if self.score == len(Platform.platforms) - 2: # Add more platforms when close to top of current platforms
 			Platform.add_plats(15, screen)
+		
 		
 
 		
@@ -86,6 +90,12 @@ class Player:
 			self.y += self.y_velocity
 			self.y_velocity += 1.2
 			self.rect = self.img.get_rect(topleft=(self.x, self.y))
+
+	def check_bullet_collisions(self, meatballs):
+		for meatball in meatballs:
+			if self.rect.colliderect(meatball.rect):
+				self.damage += 1
+				meatballs.remove(meatball)
 
 	def draw_hearts(self, screen):
 		heart_width = Player.heart_img.get_width() + 3

@@ -1,6 +1,7 @@
 import random
 import pygame
 from .Coin import Coin
+from .Enemy import Enemy
 
 class Platform: #Platform + former = platformer
 	platforms = []
@@ -45,6 +46,13 @@ class Platform: #Platform + former = platformer
 					((base_y) - i * 275) - Coin.coin_img.get_height() - 15,
 					Platform.platforms[-1]
 				)
+			if random.randint(1, 10) <= 1: # 10 percent enemy spawn rate
+				Enemy(
+					Enemy.enemy_img,
+					platform_x + Platform.platform_img.get_width() / 2 - Enemy.enemy_img.get_width() / 2,
+					((base_y) - i * 275) - Enemy.enemy_img.get_height(),
+					Platform.platforms[-1]
+				)
 
 	@staticmethod
 	def create_plates(amount, screen): # Initial creation of platforms incuding ground platform
@@ -61,5 +69,13 @@ class Platform: #Platform + former = platformer
 					Coin.coin_img, 
 					platform_x + Platform.platform_img.get_width() / 2 - Coin.coin_img.get_width() / 2,
 					((base_y) - i * 275) - Coin.coin_img.get_height() - 15,
+					Platform.platforms[-1]
+				)
+			if random.randint(1, 10) <= 5 and (base_y) - i * 275 < 150: # 10 percent enemy spawn rate
+				print("Spawned Enemy")
+				Enemy(
+					Enemy.enemy_img,
+					platform_x + Platform.platform_img.get_width() / 2 - Enemy.enemy_img.get_width() / 2,
+					((base_y) - i * 275) - Enemy.enemy_img.get_height(),
 					Platform.platforms[-1]
 				)
