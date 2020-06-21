@@ -36,7 +36,7 @@ class Enemy:
 				self.enemies.remove(self)
 				data = read_data('data.json')
 				self.target_player.coins += data['coin_multiplier'] * 10
-				return
+				return # Leave loop if hit by bullet
 
 	def draw(self, screen, offset):
 		screen.blit(self.img, (self.x, self.y + offset))
