@@ -3,6 +3,7 @@ from .Coin import Coin
 from .Platform import Platform
 from .Enemy import Enemy
 from .Meatball import Meatball
+from .Bullet import Bullet
 
 class Camera:
 	def draw_and_scroll(self, player, screen):
@@ -31,6 +32,10 @@ class Camera:
 		for meatball in Meatball.meatballs:
 			meatball.update()
 			meatball.draw(screen, offset)
+
+		for bullet in Bullet.bullets:
+			bullet.update(screen)
+			bullet.draw(screen, offset)
 
 		for coin in Coin.coins:
 			screen.blit(coin.img, (coin.x, coin.y + offset))

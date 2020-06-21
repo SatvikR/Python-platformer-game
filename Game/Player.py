@@ -3,6 +3,7 @@ from .Coin import Coin
 from .Platform import Platform
 from .Highscores.read_write import read_data, dump_data
 from .Meatball import Meatball
+from .Bullet import Bullet
 
 class Player:
 	walk_speed = 10
@@ -12,6 +13,7 @@ class Player:
 	jump_velocity = read_data('data.json')['jump_vel'] # Increase this value to jump higher
 	heart_img = pygame.image.load("./assets/images/heart.png")
 	gun_img = pygame.image.load("./assets/images/gun.png")
+	bullet_img = pygame.image.load("./assets/images/bullet.png")
 	
 	def __init__(self, img, x, y):
 		self.img = img
@@ -91,7 +93,22 @@ class Player:
 		
 		
 
-		
+	def spawn_bullet(self):
+		if self.direction == 'r':
+			Bullet(
+				self.bullet_img,
+				self.x + self.gun_img.get_width() + self.rect.width,
+				self.y + self.img.get_height() / 2,
+				0
+			)
+		else:
+			Bullet(
+				self.bullet_img,
+				self.x - self.gun_img.get_width(),
+				self.y + self.img.get_height() / 2,
+				180
+			)
+
 	def jump(self): # Jump if touching grounds
 		if self.y_velocity == 0:
 			self.y_velocity = -self.jump_velocity

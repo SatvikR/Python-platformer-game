@@ -1,7 +1,6 @@
 import pygame
 import sys
 from Game import (
-	Coin,
 	Player, 
 	Platform, 
 	Camera, 
@@ -145,6 +144,8 @@ def game_loop(): # Main game loop
 			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
 					pause()
+			elif event.type == pygame.MOUSEBUTTONDOWN:
+				player.spawn_bullet()
 			
 		key = pygame.key.get_pressed()
 		if key[pygame.K_a]:
