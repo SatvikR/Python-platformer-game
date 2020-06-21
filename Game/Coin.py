@@ -12,6 +12,7 @@ class Coin:
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		self.coins.append(self)
 		self.cor_platform = platform # Platform underneath
+		print(f"Spawned a Coin at {x}, {y} and moving is {platform.moving}")
 		
 	def draw(self, screen):
 		if self.cor_platform.moving: # Move if platform underneath is moving
