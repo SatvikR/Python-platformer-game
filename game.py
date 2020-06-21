@@ -137,6 +137,7 @@ def game_loop(): # Main game loop
 	Platform.platforms.clear()
 	Meatball.meatballs.clear()
 	Coin.coins.clear()
+	Enemy.enemies.clear()
 
 	Upgrades.update_upgrades('data.json')
 

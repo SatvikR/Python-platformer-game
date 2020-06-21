@@ -1,4 +1,4 @@
-from math import sin, cos, atan, degrees, radians
+from math import sin, cos, atan, degrees, radians, tan
 
 class Meatball:
 	meatballs = []
@@ -9,8 +9,11 @@ class Meatball:
 		player_x, player_y = player_pos
 		try:
 			self.angle = degrees(atan((enemy_y - player_y) / (enemy_x - player_x)))
+			print(f"Slope: {tan(radians(self.angle))}")
 		except ZeroDivisionError:
-			self.angle = 0
+			self.angle = 90 if player_y > enemy_y else 180
+		print(f"Spawned meatball with: x_vel: {int(self.speed * cos(radians(self.angle)))}, y_vel: {int(self.speed * sin(radians(self.angle)))}")
+		print(f"Angle = {self.angle}")
 		self.x, self.y = enemy_x, enemy_y
 		self.img = img
 		self.rect = img.get_rect(topleft=(self.x, self.y))
