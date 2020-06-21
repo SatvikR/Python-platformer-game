@@ -1,4 +1,3 @@
-import pygame
 from math import sin, cos, atan, degrees, radians
 
 class Meatball:

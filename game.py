@@ -1,7 +1,6 @@
 import pygame
 import sys
 from Game import (
-	Coin,
 	Player, 
 	Platform, 
 	Camera, 
@@ -130,6 +129,7 @@ def enter_score(): # Prompt that appears when a player gets a highscore
 
 def game_loop(): # Main game loop
 	player = Player(player_img, Player.start_x, Player.start_y)
+	Enemy.target_player = player
 
 	Upgrades.update_upgrades('data.json')
 
@@ -144,6 +144,8 @@ def game_loop(): # Main game loop
 			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_ESCAPE:
 					pause()
+			elif event.type == pygame.MOUSEBUTTONDOWN:
+				player.spawn_bullet()
 			
 		key = pygame.key.get_pressed()
 		if key[pygame.K_a]:

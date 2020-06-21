@@ -3,6 +3,7 @@ from .Coin import Coin
 from .Platform import Platform
 from .Highscores.read_write import read_data, dump_data
 from .Meatball import Meatball
+from .Bullet import Bullet
 
 class Player:
 	walk_speed = 10
@@ -11,6 +12,8 @@ class Player:
 	current_pos = 0, 0
 	jump_velocity = read_data('data.json')['jump_vel'] # Increase this value to jump higher
 	heart_img = pygame.image.load("./assets/images/heart.png")
+	gun_img = pygame.image.load("./assets/images/gun.png")
+	bullet_img = pygame.image.load("./assets/images/bullet.png")
 	
 	def __init__(self, img, x, y):
 		self.img = img
@@ -24,6 +27,7 @@ class Player:
 		self.high = 0
 		self.hearts = 5
 		self.damage = 0
+		self.direction = 'r'
 		self.coins = read_data('data.json')['coins']
 		self.coin_multiplier = read_data('data.json')["coin_multiplier"] # Can be upgraded
 		Player.jump_velocity = read_data('data.json')['jump_vel'] # Reloaded because can be upgraded
@@ -32,8 +36,10 @@ class Player:
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		if self.x_velocity < 0: # Draw a reversed image if facing to the left
 			screen.blit(pygame.transform.flip(self.img, True, False), (self.x, self.y))
+			screen.blit(self.gun_img, (self.x - self.gun_img.get_width(), self.y - self.img.get_height() / 2))
 		else:
 			screen.blit(self.img, (self.x, self.y))
+			screen.blit(self.gun_img, (self.x + self.img.get_width(), self.y - self.img.get_height() / 2))
 
 	def update_physics(self, screen):
 
@@ -75,15 +81,34 @@ class Player:
 
 		data = read_data('data.json')
 		data['coins'] = self.coins
-		data["current_pos"] = [self.x, self.y]
 		dump_data('data.json', data)
+
+		if self.x_velocity > 0:
+			self.direction = 'r'
+		elif self.x_velocity < 0:
+			self.direction = 'l'
 
 		if self.score == len(Platform.platforms) - 2: # Add more platforms when close to top of current platforms
 			Platform.add_plats(15, screen)
 		
 		
 
-		
+	def spawn_bullet(self):
+		if self.direction == 'r':
+			Bullet(
+				self.bullet_img,
+				self.x + self.gun_img.get_width() + self.rect.width,
+				self.y + self.img.get_height() / 2,
+				0
+			)
+		else:
+			Bullet(
+				self.bullet_img,
+				self.x - self.gun_img.get_width(),
+				self.y + self.img.get_height() / 2,
+				180
+			)
+
 	def jump(self): # Jump if touching grounds
 		if self.y_velocity == 0:
 			self.y_velocity = -self.jump_velocity

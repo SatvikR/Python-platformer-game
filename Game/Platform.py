@@ -46,7 +46,7 @@ class Platform: #Platform + former = platformer
 					((base_y) - i * 275) - Coin.coin_img.get_height() - 15,
 					Platform.platforms[-1]
 				)
-			if random.randint(1, 10) <= 1: # 10 percent enemy spawn rate
+			if random.randint(1, 10) <= 2: # 20 percent enemy spawn rate
 				Enemy(
 					Enemy.enemy_img,
 					platform_x + Platform.platform_img.get_width() / 2 - Enemy.enemy_img.get_width() / 2,
@@ -71,7 +71,7 @@ class Platform: #Platform + former = platformer
 					((base_y) - i * 275) - Coin.coin_img.get_height() - 15,
 					Platform.platforms[-1]
 				)
-			if random.randint(1, 10) <= 5 and (base_y) - i * 275 < 150: # 10 percent enemy spawn rate
+			if random.randint(1, 10) <= 2 and (base_y) - i * 275 < 150: # 20 percent enemy spawn rate
 				print("Spawned Enemy")
 				Enemy(
 					Enemy.enemy_img,

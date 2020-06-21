@@ -1,3 +1,4 @@
+from .Bullet import Bullet
 from .Enemy import Enemy
 from .Coin import Coin
 from .Player import Player
