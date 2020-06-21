@@ -1,6 +1,7 @@
 from .Bullet import Bullet
 from .Enemy import Enemy
 from .Coin import Coin
+from .Meatball import Meatball
 from .Player import Player
 from .Platform import Platform
 from .Camera import Camera
