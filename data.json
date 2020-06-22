@@ -1,7 +1,7 @@
 {
-    "high": 0.0,
-    "name": "",
-    "coins": 3253,
+    "high": 10.0,
+    "name": "SR",
+    "coins": 3340,
     "jump_vel": 27.5,
     "coin_multiplier": 1,
     "upgrades": [
