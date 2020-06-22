@@ -42,7 +42,7 @@ class Platform: #Platform + former = platformer
 			if random.randint(1, 10) <= 2: # 20 percent chance of Coin spawn
 				Coin(
 					Coin.coin_img, 
-					platform_x + Platform.platform_img.get_width() / 2,
+					platform_x + Platform.platform_img.get_width() / 2 - Coin.coin_img.get_width() / 2,
 					((base_y) - i * 275) - Coin.coin_img.get_height() - 15,
 					Platform.platforms[-1]
 				)
