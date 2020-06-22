@@ -12,14 +12,15 @@ class Coin:
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		self.coins.append(self)
 		self.cor_platform = platform # Platform underneath
+		self.moving = platform.moving
 		print(f"Spawned a Coin at {x}, {y} and moving is {platform.moving}")
 		
-	def draw(self, screen):
+	def draw(self, screen, offset):
 		if self.cor_platform.moving: # Move if platform underneath is moving
 			self.x += self.cor_platform.x_vel
 			self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
-		screen.blit(self.img, (self.x, self.y))
+		screen.blit(self.img, (self.x, self.y + offset))
 
 	@staticmethod
 	def draw_all(screen):

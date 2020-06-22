@@ -24,6 +24,8 @@ class Camera:
 			screen.blit(player.gun_img, (player.x + player.img.get_width(), player.y + player.img.get_height() / 2 + offset))
 
 		[plat.draw(screen, offset) for plat in Platform.platforms]
+
+		[coin.draw(screen, offset) for coin in Coin.coins]
 		
 		for enemy in Enemy.enemies:
 			enemy.update()
@@ -36,6 +38,3 @@ class Camera:
 		for bullet in Bullet.bullets:
 			bullet.update(screen)
 			bullet.draw(screen, offset)
-
-		for coin in Coin.coins:
-			screen.blit(coin.img, (coin.x, coin.y + offset))
