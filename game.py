@@ -153,7 +153,8 @@ def game_loop(): # Main game loop
 				if event.key == pygame.K_ESCAPE:
 					pause()
 			elif event.type == pygame.MOUSEBUTTONDOWN:
-				player.spawn_bullet()
+				if event.button == 1:
+					player.spawn_bullet()
 			
 		key = pygame.key.get_pressed()
 		if key[pygame.K_a]:
@@ -220,7 +221,7 @@ def pause(): # Pause Menu
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == pygame.MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 				if menu_button.check_pos():
 					main_menu()
 				elif resume_button.check_pos():
@@ -282,7 +283,7 @@ def shop(): # Menu from which player can buy upgrades
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == pygame.MOUSEBUTTONDOWN: # Check each upgrade button and do the according action
+			elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # Check each upgrade button and do the according action
 				if menu_button.check_pos():
 					main_menu()
 				elif jump_button.check_pos():
@@ -354,7 +355,7 @@ def upgrade_prompt(upgrade_name): # Prompt when upgrade is purchased
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == pygame.MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 				if back_button.check_pos():
 					return
 
@@ -395,7 +396,7 @@ def empty_prompt(text): # Generic prompt with text and back button
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				running = False
-			elif event.type == pygame.MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 				if back_button.check_pos():
 					return
 
