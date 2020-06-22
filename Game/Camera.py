@@ -15,7 +15,7 @@ class Camera:
 		"""
 		self.offset += (player.rect.y - self.offset - (screen.get_height() / 2 + player.rect.height / 2)) / 15
 		reversed_offset = -1 * self.offset
-		#self.offset = player.start_y - player.y
+		
 		player.rect = player.img.get_rect(topleft=(player.x, player.y))
 		if player.direction == 'l':
 			screen.blit(pygame.transform.flip(player.img, True, False), (player.x, player.y + reversed_offset))
