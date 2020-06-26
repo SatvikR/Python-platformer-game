@@ -3,6 +3,7 @@
 [![Python 3.5](https://img.shields.io/badge/pygame-1.9.6-orange.svg)](https://pygame.org)
 [![GitHub](https://img.shields.io/github/license/SatvikR/Python-platformer-game)](https://github.com/SatvikR/Python-platformer-game/blob/master/LICENSE)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/SatvikR/Python-platformer-game.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/SatvikR/Python-platformer-game/context:python)
+[![CodeFactor](https://www.codefactor.io/repository/github/satvikr/python-platformer-game/badge)](https://www.codefactor.io/repository/github/satvikr/python-platformer-game)
 
 <br>
 A platformer made with pygame
