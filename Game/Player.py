@@ -28,6 +28,7 @@ class Player:
 		self.hearts = 5
 		self.damage = 0
 		self.direction = 'r'
+		self.multiplier = 4
 		self.coins = read_data('data.json')['coins']
 		self.coin_multiplier = read_data('data.json')["coin_multiplier"] # Can be upgraded
 		Player.jump_velocity = read_data('data.json')['jump_vel'] # Reloaded because can be upgraded
@@ -70,6 +71,8 @@ class Player:
 		self.score = (700 - self.y) // 275 # Calculate current score based on y_pos
 		if self.score > self.high:
 			self.high = self.score
+
+		# self.multiplier = (self.score / 10) + 1
 
 		self.check_bullet_collisions(Meatball.meatballs)
 		self.hearts = 5 - int(self.high - self.score) - self.damage

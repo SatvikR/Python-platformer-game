@@ -106,7 +106,7 @@ def enter_score(): # Prompt that appears when a player gets a highscore
 					dump_data('data.json', data)
 					main_menu()
 				else:
-					if len(text) < 3:
+					if len(text) < 6:
 						text += event.unicode
 
 
@@ -115,7 +115,7 @@ def enter_score(): # Prompt that appears when a player gets a highscore
 		pygame.draw.rect(screen, (47, 47, 47), pygame.Rect((width - 170, 0), (200, 35)))
 
 		message = message_font.render("Congrats, you got a highscore!", True, (255, 255, 255))
-		prompt = message_font.render("Enter Your Initials:", True, (255, 255, 255))
+		prompt = message_font.render("Enter Your Name:", True, (255, 255, 255))
 		current = highscore_font.render(text.upper(), True, (0, 0, 0))
 		enter = message_font.render("Press enter/return to submit", True, (255, 255, 255))
 

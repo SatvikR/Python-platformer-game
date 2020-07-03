@@ -9,13 +9,13 @@ class Platform: #Platform + former = platformer
 	ground_img = pygame.image.load("./assets/images/ground.png")
 
 
-	def __init__(self, x, y, img):
+	def __init__(self, x, y, img, ground=False):
 		self.x = x
 		self.y = y
 		self.img = img
 		self.rect = self.img.get_rect(topleft=(self.x, self.y))
 		self.platforms.append(self)
-		self.moving = bool(random.randint(0, 1))
+		self.moving = bool(random.randint(0, 1)) if not ground else False
 		self.x_vel = random.randint(2,6)
 
 	def draw(self, screen, offset): # Offset is the players offset (this is called in the draw_and_scroll function)
@@ -57,7 +57,7 @@ class Platform: #Platform + former = platformer
 	@staticmethod
 	def create_plates(amount, screen): # Initial creation of platforms incuding ground platform
 		Platform.platforms.clear()
-		Platform(60, 700, Platform.ground_img)
+		Platform(60, 700, Platform.ground_img, ground=True)
 		max_x = screen.get_width() - Platform.platform_img.get_width()
 		base_y = 700
 		for i in range(1, amount + 1):
