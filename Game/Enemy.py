@@ -18,9 +18,10 @@ class Enemy:
 		Enemy.enemies.append(self)
 		self.cor_platform = platform # Platform underneath
 		self.frame = 0
-		self.health_multiplier = 1 * (0.1 * Enemy.enemiesspawned)
+		self.health_multiplier = 1 * Enemy.enemiesspawned
 		self.health = 4 * self.health_multiplier
 		Enemy.enemiesspawned += 1
+		print(self.health)
 	def update(self):
 		self.check_bullet_collision()
 		if self.cor_platform.moving: # Move if platform underneath is moving
