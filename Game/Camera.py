@@ -6,7 +6,7 @@ from .Meatball import Meatball
 from .Bullet import Bullet
 
 class Camera:
-	offset = 500
+	offset = 800
 
 	def draw_and_scroll(self, player, screen):
 		"""

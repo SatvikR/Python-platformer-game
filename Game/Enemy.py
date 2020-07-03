@@ -28,16 +28,23 @@ class Enemy:
 			self.x += self.cor_platform.x_vel
 			self.rect = self.img.get_rect(topleft=(self.x, self.y))
 
-		if self.frame % 240 == 0: # Once a second
+		if self.timer % 240 == 0: # Once per 4 seconds
 			Meatball((self.target_player.x, self.target_player.y), (self.x, self.y), pygame.image.load("./assets/images/meatball.png"))
+			print(self.target_player.multiplier)
 
-		self.frame += 1
+		self.timer += 1
 
 	def check_bullet_collision(self):
 		for bullet in Bullet.bullets:
 			if bullet.rect.colliderect(self.rect):
+<<<<<<< HEAD
+				self.health -= 1
+				Bullet.bullets.remove(bullet)
+				if self.health <= 0: # dead
+=======
 				self.health = self.health - 1
 				if self.health <= 0:
+>>>>>>> a08b43982f6153bbff2fad57a82cdadad45b9745
 					self.enemies.remove(self)
 					data = read_data('data.json')
 					self.target_player.coins += data['coin_multiplier'] * 10
