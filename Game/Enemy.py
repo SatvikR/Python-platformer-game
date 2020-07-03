@@ -37,14 +37,8 @@ class Enemy:
 	def check_bullet_collision(self):
 		for bullet in Bullet.bullets:
 			if bullet.rect.colliderect(self.rect):
-<<<<<<< HEAD
-				self.health -= 1
-				Bullet.bullets.remove(bullet)
-				if self.health <= 0: # dead
-=======
 				self.health = self.health - 1
 				if self.health <= 0:
->>>>>>> a08b43982f6153bbff2fad57a82cdadad45b9745
 					self.enemies.remove(self)
 					data = read_data('data.json')
 					self.target_player.coins += data['coin_multiplier'] * 10
