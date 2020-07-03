@@ -1,7 +1,7 @@
 {
-    "high": 0.0,
+    "high": 0,
     "name": "",
-    "coins": 0,
+    "coins": 625,
     "jump_vel": 27.5,
     "coin_multiplier": 1,
     "upgrades": [
