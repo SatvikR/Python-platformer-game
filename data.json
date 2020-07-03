@@ -1,27 +1,24 @@
 {
-    "high": 35.0,
-    "name": "SR",
-    "coins": 2069,
-    "jump_vel": 27.5,
-    "coin_multiplier": 1,
-    "upgrades": [
-        "jump_upgrade",
-        "coin_upgrade"
-    ],
-    "jump_upgrade": {
-        "price": 200,
-        "duration": 5,
-        "time": 0,
-        "active": false,
-        "revert_val": 27.5,
-        "revert_variable": "jump_vel"
-    },
-    "coin_upgrade": {
-        "price": 75,
-        "duration": 10,
-        "time": 0,
-        "active": false,
-        "revert_val": 1,
-        "revert_variable": "coin_multiplier"
-    }
+  "high": 0,
+  "name": "",
+  "coins": 625,
+  "jump_vel": 27.5,
+  "coin_multiplier": 1,
+  "upgrades": ["jump_upgrade", "coin_upgrade"],
+  "jump_upgrade": {
+    "price": 200,
+    "duration": 5,
+    "time": 0,
+    "active": false,
+    "revert_val": 27.5,
+    "revert_variable": "jump_vel"
+  },
+  "coin_upgrade": {
+    "price": 75,
+    "duration": 10,
+    "time": 0,
+    "active": false,
+    "revert_val": 1,
+    "revert_variable": "coin_multiplier"
+  }
 }
